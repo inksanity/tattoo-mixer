@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>TattooMix — PWA (Basic vs Pro)</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b0e13">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0e13; --panel:#0f131b; --panel-2:#0c0f15; --stroke:#1f2736; --stroke-2:#2a354b;
+  --text:#eef2f8; --muted:#9fb0c9; --accent:#5aa8ff; --shadow:0 14px 28px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:radial-gradient(1200px 1200px at 10% -10%, #122033 0%, #0b0e13 45%) fixed;color:var(--text);font-family:Inter, system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.app{display:grid;grid-template-rows:auto 1fr;min-height:100%}
+.appbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--stroke);background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.25));position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800}
+.badge{padding:6px 10px;border:1px solid var(--stroke);border-radius:999px;background:#0e1522;color:#9fc6ff}
+.segment{display:flex;gap:6px;padding:6px;border-radius:999px;border:1px solid var(--stroke);background:linear-gradient(180deg,#0f141f,#0a0f19);box-shadow:var(--shadow)}
+.segment .seg{padding:8px 14px;border-radius:999px;color:var(--muted);cursor:pointer;border:1px solid transparent}
+.segment .seg.active{background:linear-gradient(180deg,#1a2235,#0e1522);color:var(--text);border-color:var(--stroke-2);box-shadow:var(--shadow)}
+
+main{display:grid;grid-template-columns:minmax(280px,58%) minmax(320px,1fr);gap:16px;padding:16px;align-items:start}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--stroke);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.card>header{padding:12px 16px;border-bottom:1px solid var(--stroke);display:flex;align-items:center;justify-content:space-between}
+.card .body{padding:14px 16px}
+.hint{color:var(--muted);font-size:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* Inputs - dark */
+select,input,textarea{
+  background:#0b111a;
+  border:1px solid var(--stroke-2); color:var(--text);
+  border-radius:12px; padding:10px 12px; min-height:42px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  -webkit-appearance:none; appearance:none;
+}
+textarea{min-height:80px; resize:vertical}
+select{ background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%239fb0c9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'); background-repeat:no-repeat; background-position: right 10px center; padding-right:34px }
+
+.btn{background:linear-gradient(180deg,#182135,#0f1626);border:1px solid var(--stroke-2);color:var(--text);padding:10px 12px;border-radius:14px;box-shadow:var(--shadow);cursor:pointer}
+.btn.primary{background:linear-gradient(180deg,#6cb3ff,#2a74ff);color:#0b1220;border-color:#2a74ff;text-shadow:0 1px 0 rgba(255,255,255,.4)}
+.btn.disabled{opacity:.55;filter:grayscale(35%);cursor:not-allowed}
+.locked::after{content:"🔒";margin-left:6px;opacity:.85}
+
+#canvasWrap{height:54vh;border:1px solid var(--stroke);border-radius:18px;background:radial-gradient(600px 400px at 30% 20%,#0f1b2a 0%,#0b1019 55%);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+canvas{max-width:100%;max-height:100%;display:block}
+
+/* Eyedropper */
+.toolrow{display:flex;gap:10px;align-items:center}
+.badgeTiny{padding:4px 8px;border-radius:999px;border:1px solid var(--stroke);background:#0e1522;color:#9fc6ff;font-size:12px}
+#loupe{position:absolute; width:90px; height:90px; border-radius:50%; border:2px solid #2a354b; box-shadow:0 10px 20px rgba(0,0,0,.6); display:none; pointer-events:none; overflow:hidden; background:#0b0f15}
+#loupe canvas{transform:scale(3); transform-origin:top left}
+
+/* Metadata grid (Pro) */
+.metaGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.metaGrid > div{display:flex;flex-direction:column;gap:6px;min-height:64px}
+
+/* Swatches */
+#paletteStrip{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}
+.square{width:50px;height:50px;border-radius:10px;border:1px solid var(--stroke);box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 8px 18px rgba(0,0,0,.55);position:relative}
+.slabel{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font-size:10px;color:#9fb0c9;text-shadow:0 1px 0 rgba(0,0,0,.8)}
+
+/* Pro 3D splats */
+.splat{position:relative;width:72px;height:72px;filter:drop-shadow(0 10px 16px rgba(0,0,0,.6));cursor:pointer}
+.splat svg{width:100%;height:100%}
+.splat .shine{position:absolute;inset:0;background:radial-gradient(120% 80% at 25% 20%, rgba(255,255,255,.55) 0%, rgba(255,255,255,.25) 22%, rgba(255,255,255,0) 60%);mix-blend-mode:screen;border-radius:50%;pointer-events:none}
+
+#recipes{max-height:calc(100vh - 220px);overflow:auto;padding:6px}
+.recipe{background:linear-gradient(180deg,#0c121d,#0a1019);border:1px solid var(--stroke);border-radius:18px;padding:12px;display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin-bottom:12px}
+.sw{width:56px;height:56px;border-radius:12px;border:1px solid var(--stroke)}
+.inkrow{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;gap:6px;align-items:center;border-radius:999px;padding:6px 10px;background:linear-gradient(180deg,#0e1522,#0a0f1a);border:1px solid var(--stroke-2);color:#cfe1ff;box-shadow:var(--shadow)}
+
+.toolbar{position:sticky;bottom:0;z-index:4;margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--stroke);background:linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.45));backdrop-filter: blur(8px)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="appbar">
+    <div class="brand">TattooMix <span class="badge" id="tierBadge">Basic</span> <span class="badge">PWA</span></div>
+    <div class="segment" role="tablist" aria-label="Mode (dev testing)">
+      <button class="seg active" id="segBasic">Basic</button>
+      <button class="seg" id="segPro">Pro</button>
+    </div>
+    <div class="row">
+      <button class="btn locked" id="btnSave">Save</button>
+      <button class="btn locked" id="btnLoad">Load</button>
+      <input type="file" id="loadInput" accept=".tatmix,application/json" style="display:none" />
+      <button class="btn primary locked" id="btnExportPNG">Export PNG</button>
+      <button class="btn locked" id="btnExportPDF">Print / PDF</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- LEFT -->
+    <section class="card">
+      <header>
+        <div>
+          <div style="font-weight:700">Reference & Palette</div>
+          <div class="hint" id="hdrHint">Tap with the Eyedropper to add colors (Auto‑extract is Pro)</div>
+        </div>
+        <div class="row">
+          <button class="btn" id="btnImport">Import Image</button>
+          <button class="btn locked" id="btnExtract">Auto‑extract</button>
+          <label class="hint">K</label>
+          <select id="kColors" disabled><option>5</option><option selected>6</option><option>7</option><option>8</option></select>
+          <input type="file" id="fileInput" accept="image/*" style="display:none" />
+        </div>
+      </header>
+      <div class="body">
+        <div class="row" style="margin-bottom:8px">
+          <label class="hint">Brand</label>
+          <select id="brandSel"></select>
+          <label class="hint">Cap</label>
+          <select id="capSel"><option value="S">Small (20)</option><option value="M" selected>Medium (40)</option><option value="L">Large (80)</option></select>
+          <label class="hint">Units</label>
+          <select id="unitSel" disabled><option value="drops" selected>Drops</option><option value="percent">%</option><option value="ml">ml</option><option value="oz">oz</option></select>
+          <span class="badgeTiny" id="statusChip">Ready</span>
+        </div>
+
+        <!-- Pro-only metadata -->
+        <div class="metaGrid" id="metaGrid" style="display:none">
+          <div><label class="hint">Studio / Artist</label><input id="studioInput" placeholder="Studio / Artist"/></div>
+          <div><label class="hint">Client</label><input id="clientInput" placeholder="Client"/></div>
+          <div><label class="hint">Date</label><input id="dateInput" type="date"/></div>
+          <div><label class="hint">Placement</label><input id="placementInput" placeholder="Forearm, Upper back…"/></div>
+        </div>
+
+        <div class="toolrow" style="margin:8px 0">
+          <button class="btn" id="btnEyedropper">Eyedropper</button>
+          <span class="hint">Tap on the image to add that color to the palette. A loupe will show under your finger for precision.</span>
+        </div>
+
+        <div id="canvasWrap">
+          <div id="loupe"><canvas id="loupeCanvas" width="90" height="90"></canvas></div>
+          <canvas id="canvas" width="0" height="0"></canvas>
+        </div>
+        <div id="paletteStrip"></div>
+
+        <div class="toolbar">
+          <div class="hint" id="tip">Basic trial: manual Eyedropper + drops only. Pro unlocks auto‑extract, save/export, session fields, and Pro palette styles.</div>
+          <div class="row" id="proOnlyControls" style="display:none">
+            <button class="btn" id="btnStylePill">3D Buttons</button>
+            <button class="btn" id="btnStyleSplat">Ink Splats</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <section class="card">
+      <header>
+        <div style="font-weight:700">Mix Recipes</div>
+        <div class="hint" id="modeHint">Drops only (Basic)</div>
+      </header>
+      <div class="body">
+        <div id="recipes"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('service-worker.js').catch(console.error);
+  });
+}
+</script>
+
+<script>
+// Palettes
+const BRANDS = {
+  "Radiant": [
+    {name:"Radiant White", hex:"#FFFFFF"},
+    {name:"Real Black", hex:"#111111"},
+    {name:"Blood Red", hex:"#C21807"},
+    {name:"Blue", hex:"#1E50A2"},
+    {name:"Canary Yellow", hex:"#FFD12A"},
+    {name:"Medium Green", hex:"#2FA84F"},
+    {name:"Tiger Orange", hex:"#FF7A00"},
+    {name:"Chocolate", hex:"#6B3E26"},
+    {name:"Fuchsia", hex:"#C218C2"},
+    {name:"Lavender", hex:"#B57EDC"},
+  ],
+  "Eternal": [
+    {name:"Lining Black", hex:"#111111"},
+    {name:"White", hex:"#FFFFFF"},
+    {name:"Bright Orange", hex:"#FF7F2A"},
+    {name:"True Blue", hex:"#0076CE"},
+    {name:"Light Purple", hex:"#B27AD3"},
+    {name:"Lime Green", hex:"#7FD321"},
+    {name:"Dark Brown", hex:"#4D2C1E"},
+    {name:"Light Magenta", hex:"#FF6FB5"},
+    {name:"Lipstick Red", hex:"#C21E3A"},
+    {name:"Caramel", hex:"#A86D3D"},
+  ],
+  "Solid": [
+    {name:"El Picante", hex:"#CF4F2E"},
+    {name:"Satan Red", hex:"#B0122E"},
+    {name:"Traditional Orange", hex:"#FF6A1C"},
+    {name:"Oro", hex:"#E6B422"},
+    {name:"Dirty Green", hex:"#6B8F3B"},
+    {name:"Jade", hex:"#00A86B"},
+    {name:"Green 7", hex:"#008B45"},
+    {name:"Blue 15", hex:"#1E50A2"},
+    {name:"Old Brown", hex:"#5C3B2E"},
+    {name:"Coffee", hex:"#4B3621"},
+  ],
+  "Raw": [
+    {name:"Raw White", hex:"#FFFFFF"},
+    {name:"Pitch Black", hex:"#111111"},
+    {name:"Bright Yellow", hex:"#FFD11A"},
+    {name:"Blue Sky", hex:"#2CA9E1"},
+    {name:"Raw Green", hex:"#2E8B57"},
+    {name:"Laker Purple", hex:"#7F3FBF"},
+    {name:"Light Red", hex:"#E24C4B"},
+    {name:"Agent Orange", hex:"#FF6A00"},
+    {name:"Bloodberry", hex:"#B03060"},
+    {name:"Yellow Ochre", hex:"#C99700"},
+  ]
+};
+
+// State
+const state = {
+  tier: 'basic',
+  brand: 'Radiant',
+  cap: 'S',
+  unit: 'drops',
+  swatches: ['#F56A6A','#52A7FF','#73D98E','#B093F1'],
+  style: 'pill',
+  eyedropper: false,
+  _results: [], _imgBitmap: null
+};
+
+// DOM
+const $ = id => document.getElementById(id);
+const segBasic=$('segBasic'), segPro=$('segPro'), tierBadge=$('tierBadge');
+const btnImport=$('btnImport'), btnExtract=$('btnExtract'), kSel=$('kColors'), fileInput=$('fileInput');
+const btnSave=$('btnSave'), btnLoad=$('btnLoad'), loadInput=$('loadInput'), btnExportPNG=$('btnExportPNG'), btnExportPDF=$('btnExportPDF');
+const brandSel=$('brandSel'), capSel=$('capSel'), unitSel=$('unitSel');
+const statusChip=$('statusChip'), hdrHint=$('hdrHint'), proOnlyControls=$('proOnlyControls'), tip=$('tip'), modeHint=$('modeHint');
+const paletteStrip=$('paletteStrip'), recipes=$('recipes');
+const canvas=$('canvas'); const ctx=canvas.getContext('2d',{willReadFrequently:true});
+const btnEyedropper=$('btnEyedropper'), loupe=$('loupe'), loupeCanvas=$('loupeCanvas'), lctx=loupeCanvas.getContext('2d');
+const metaGrid=$('metaGrid'); const studioInput=$('studioInput'); const clientInput=$('clientInput'); const dateInput=$('dateInput'); const placementInput=$('placementInput');
+
+Object.keys(BRANDS).forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; brandSel.appendChild(o); });
+brandSel.value = state.brand;
+
+// Tier toggle
+segBasic.onclick=()=> setTier('basic');
+segPro.onclick  =()=> setTier('pro');
+function setTier(t){
+  state.tier=t;
+  segBasic.classList.toggle('active', t==='basic');
+  segPro.classList.toggle('active',   t==='pro');
+  tierBadge.textContent = t==='basic' ? 'Basic' : 'Pro';
+  const basic = t==='basic';
+  lock(btnSave,basic); lock(btnLoad,basic); lock(btnExportPNG,basic); lock(btnExportPDF,basic);
+  lock(btnExtract,basic); kSel.disabled = basic; unitSel.disabled = basic;
+  metaGrid.style.display = basic ? 'none' : 'grid';
+  proOnlyControls.style.display = basic ? 'none' : 'flex';
+  hdrHint.textContent = basic ? 'Tap with the Eyedropper to add colors (Auto‑extract is Pro)' : 'Import image → Auto‑extract or long‑press to sample areas';
+  tip.textContent     = basic ? 'Basic trial: manual Eyedropper + drops only. Pro unlocks auto‑extract, save/export, session fields, and Pro palette styles.' : 'Pro: auto‑extract, 3D buttons/splats, %, ml, oz.';
+  modeHint.textContent= basic ? 'Drops only (Basic)' : 'Drops / %, ml, oz (Pro)';
+  renderPalette(); computeAllRecipes();
+}
+function lock(btn, isLocked){ if(isLocked){ btn.classList.add('disabled','locked'); } else { btn.classList.remove('disabled','locked'); } }
+
+// Import
+btnImport.onclick=()=> fileInput.click();
+fileInput.onchange=async (e)=>{ const f=e.target.files[0]; if(!f) return; const img=await createImageBitmap(f); state._imgBitmap=img; fitAndDraw(img); };
+function fitAndDraw(img){ const maxW=1600,maxH=900; let w=img.width,h=img.height; const sc=Math.min(1,maxW/w,maxH/h); w=Math.round(w*sc); h=Math.round(h*sc); canvas.width=w; canvas.height=h; ctx.clearRect(0,0,w,h); ctx.drawImage(img,0,0,w,h); }
+
+// Pro extract
+btnExtract.onclick=()=>{
+  if(state.tier==='basic'){ flash('Pro only'); return; }
+  if(canvas.width===0){ flash('Load an image first'); return; }
+  const k=parseInt(kSel.value,10); const colors=extractPalette(canvas,k);
+  state.swatches=colors.map(rgbToHex); renderPalette(); computeAllRecipes();
+};
+
+// Eyedropper tool
+btnEyedropper.onclick=()=>{
+  state.eyedropper = !state.eyedropper;
+  btnEyedropper.classList.toggle('primary', state.eyedropper);
+  flash(state.eyedropper ? 'Eyedropper ON' : 'Eyedropper OFF');
+};
+function updateLoupe(clientX, clientY){
+  if(canvas.width===0) return;
+  const rect=canvas.getBoundingClientRect();
+  const x=(clientX-rect.left)*(canvas.width/rect.width);
+  const y=(clientY-rect.top)*(canvas.height/rect.height);
+  lctx.imageSmoothingEnabled=false;
+  lctx.clearRect(0,0,90,90);
+  lctx.drawImage(canvas, Math.max(0, x-15), Math.max(0, y-15), 30, 30, 0, 0, 90, 90);
+  loupe.style.left = (clientX-45)+'px';
+  loupe.style.top  = (clientY-105)+'px';
+  loupe.style.display='block';
+}
+function pickAt(clientX, clientY){
+  const rect=canvas.getBoundingClientRect();
+  const x=Math.floor((clientX-rect.left)*(canvas.width/rect.width));
+  const y=Math.floor((clientY-rect.top)*(canvas.height/rect.height));
+  const d=ctx.getImageData(Math.max(0,x-2),Math.max(0,y-2),5,5).data;
+  let R=0,G=0,B=0,N=0; for(let i=0;i<d.length;i+=4){R+=d[i];G+=d[i+1];B+=d[i+2];N++}
+  const hx=rgbToHex([Math.round(R/N),Math.round(G/N),Math.round(B/N)]);
+  state.swatches.push(hx); renderPalette(); computeAllRecipes();
+}
+canvas.addEventListener('mousemove', e=>{ if(state.eyedropper) updateLoupe(e.clientX, e.clientY); });
+canvas.addEventListener('mouseleave', ()=>{ loupe.style.display='none'; });
+canvas.addEventListener('click', e=>{ if(state.eyedropper){ pickAt(e.clientX,e.clientY); } });
+canvas.addEventListener('touchmove', e=>{ if(state.eyedropper && e.touches[0]) updateLoupe(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
+canvas.addEventListener('touchend', e=>{ loupe.style.display='none'; });
+canvas.addEventListener('touchstart', e=>{ if(state.eyedropper && e.touches[0]){ updateLoupe(e.touches[0].clientX, e.touches[0].clientY);} }, {passive:true});
+canvas.addEventListener('touchend', e=>{ if(state.eyedropper && e.changedTouches[0]){ pickAt(e.changedTouches[0].clientX, e.changedTouches[0].clientY);} });
+
+// Style controls (Pro)
+$('btnStylePill').onclick=()=>{ if(state.tier==='pro'){ state.style='pill'; renderPalette(); } else flash('Pro only'); };
+$('btnStyleSplat').onclick=()=>{ if(state.tier==='pro'){ state.style='splat'; renderPalette(); } else flash('Pro only'); };
+
+// Selects
+brandSel.onchange = ()=>{ state.brand=brandSel.value; computeAllRecipes(); };
+capSel.onchange   = ()=>{ state.cap=capSel.value; computeAllRecipes(); };
+unitSel.onchange  = ()=>{ if(state.tier==='basic'){ unitSel.value='drops'; return; } state.unit=unitSel.value; renderRecipes(); };
+
+// Render swatches
+function renderPalette(){
+  const wrap=$('paletteStrip'); wrap.innerHTML='';
+  if(state.tier==='basic'){
+    state.swatches.forEach(hx=>{
+      const d=document.createElement('div'); d.className='square'; d.style.background=hx;
+      const label=document.createElement('div'); label.className='slabel'; label.textContent=hx;
+      d.appendChild(label); wrap.appendChild(d);
+    });
+  }else{
+    if(state.style==='pill'){
+      state.swatches.forEach(hx=>{
+        const d=document.createElement('div'); d.className='square'; d.style.width='56px'; d.style.height='56px'; d.style.borderRadius='16px';
+        d.style.boxShadow='inset 0 10px 18px rgba(255,255,255,.25), inset 0 -14px 20px rgba(0,0,0,.45), 0 18px 28px rgba(0,0,0,.55)';
+        d.style.border='1px solid rgba(0,0,0,.6)'; d.style.background=hx;
+        const label=document.createElement('div'); label.className='slabel'; label.textContent=hx;
+        d.appendChild(label); wrap.appendChild(d);
+      });
+    }else{
+      state.swatches.forEach(hx=>{
+        const wrap2=document.createElement('div'); wrap2.className='splat'; wrap2.title=hx;
+        const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('viewBox','0 0 100 100');
+        const path=document.createElementNS('http://www.w3.org/2000/svg','path'); path.setAttribute('fill',hx);
+        path.setAttribute('d','M50,10 C60,5 80,10 85,25 C95,35 95,55 85,65 C80,80 60,95 45,90 C30,95 15,85 12,70 C5,60 10,40 20,30 C25,15 40,12 50,10 Z');
+        path.setAttribute('filter','url(#drops)');
+        const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+        const filt=document.createElementNS('http://www.w3.org/2000/svg','filter'); filt.setAttribute('id','drops');
+        const feDrop=document.createElementNS('http://www.w3.org/2000/svg','feDropShadow');
+        feDrop.setAttribute('dx','0'); feDrop.setAttribute('dy','6'); feDrop.setAttribute('stdDeviation','4'); feDrop.setAttribute('flood-color','rgba(0,0,0,.6)');
+        filt.appendChild(feDrop); defs.appendChild(filt); svg.appendChild(defs); svg.appendChild(path);
+        const shine=document.createElement('div'); shine.className='shine';
+        const label=document.createElement('div'); label.className='slabel'; label.textContent=hx;
+        wrap2.appendChild(svg); wrap2.appendChild(shine); wrap2.appendChild(label);
+        wrap.appendChild(wrap2);
+      });
+    }
+  }
+}
+
+// Math & recipes
+function hexToRgb(hx){ hx=hx.replace('#',''); return [parseInt(hx.slice(0,2),16),parseInt(hx.slice(2,4),16),parseInt(hx.slice(4,6),16)]; }
+function rgbToHex([r,g,b]){ return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('').toUpperCase(); }
+function srgbToLinear(c){ c/=255; return c<=0.04045? c/12.92 : Math.pow((c+0.055)/1.055,2.4); }
+function rgbToXyz([r,g,b]){ const R=srgbToLinear(r),G=srgbToLinear(g),B=srgbToLinear(b); return [R*0.4124564+G*0.3575761+B*0.1804375, R*0.2126729+G*0.7151522+B*0.0721750, R*0.0193339+G*0.1191920+B*0.9503041]; }
+function xyzToLab([X,Y,Z]){ const Xr=0.95047,Yr=1.00000,Zr=1.08883; function f(t){return t>0.008856? Math.cbrt(t):(7.787*t+16/116)} const fx=f(X/Xr),fy=f(Y/Yr),fz=f(Z/Zr); return [116*fy-16, 500*(fx-fy), 200*(fy-fz)]; }
+function rgbToLab(rgb){ return xyzToLab(rgbToXyz(rgb)); }
+function distLab(a,b){ const dL=a[0]-b[0],da=a[1]-b[1],db=a[2]-b[2]; return Math.sqrt(dL*dL+da*da+db*db); }
+
+function extractPalette(cv,k){
+  const w=cv.width,h=cv.height; const data=ctx.getImageData(0,0,w,h).data;
+  const step=Math.max(1, Math.floor((w*h)/5000)); const pts=[];
+  for(let i=0;i<data.length;i+=4*step){ pts.push([data[i],data[i+1],data[i+2]]) }
+  const centers=[]; for(let i=0;i<k;i++) centers.push(pts[Math.floor(Math.random()*pts.length)]);
+  const labCenters=centers.map(rgbToLab); let changed=true,iter=0;
+  while(changed && iter<12){ iter++; changed=false;
+    const buckets=Array.from({length:k},()=>({sum:[0,0,0],n:0}));
+    for(const p of pts){ const lp=rgbToLab(p); let bi=0,bd=1e9; for(let j=0;j<k;j++){ const d=distLab(lp,labCenters[j]); if(d<bd){bd=d; bi=j} } const b=buckets[bi]; b.sum[0]+=p[0]; b.sum[1]+=p[1]; b.sum[2]+=p[2]; b.n++; }
+    for(let j=0;j<k;j++){ if(buckets[j].n>0){ const nc=[buckets[j].sum[0]/buckets[j].n,buckets[j].sum[1]/buckets[j].n,buckets[j].sum[2]/buckets[j].n]; const nl=rgbToLab(nc); if(distLab(nl,labCenters[j])>1){ changed=true; labCenters[j]=nl; centers[j]=nc; } } }
+  }
+  centers.sort((a,b)=> rgbToLab(b)[0]-rgbToLab(a)[0]);
+  return centers.map(c=> [Math.round(c[0]),Math.round(c[1]),Math.round(c[2])]);
+}
+
+function solveWeights(targetRgb, subset){
+  const A=subset.map(ink=> hexToRgb(ink.hex)).map(v=> v.map(s=>{s/=255; return s<=0.04045? s/12.92: Math.pow((s+0.055)/1.055,2.4)}));
+  const c=targetRgb.map(s=>{s/=255; return s<=0.04045? s/12.92: Math.pow((s+0.055)/1.055,2.4)});
+  const n=A.length; let w=Array(n).fill(1/n);
+  function mulAw(w){ const y=[0,0,0]; for(let j=0;j<n;j++){ y[0]+=A[j][0]*w[j]; y[1]+=A[j][1]*w[j]; y[2]+=A[j][2]*w[j]; } return y; }
+  function grad(w){ const y=mulAw(w); const r=[y[0]-c[0],y[1]-c[1],y[2]-c[2]]; const g=Array(n).fill(0); for(let j=0;j<n;j++){ g[j]=2*(A[j][0]*r[0]+A[j][1]*r[1]+A[j][2]*r[2]) } return g; }
+  function projectSimplex(v){ const u=[...v].sort((a,b)=>b-a); let css=0,rho=0; for(let i=0;i<v.length;i++){ css+=u[i]; if(u[i]+(1-css)/(i+1)>0) rho=i } const theta=(1-u.slice(0,rho+1).reduce((s,x)=>s+x,0))/(rho+1); return v.map(x=> Math.max(0,x+theta)); }
+  let t=0.1; for(let it=0; it<400; it++){ const g=grad(w); w=w.map((wi,i)=> wi - t*g[i]); w=projectSimplex(w); t*=0.98; } return w;
+}
+
+function pickSubset(targetHex, brandInks){
+  const targetLab=rgbToLab(hexToRgb(targetHex));
+  const arr=brandInks.map(ink=>({ink, d:distLab(targetLab, rgbToLab(hexToRgb(ink.hex)))})); arr.sort((a,b)=>a.d-b.d);
+  const chosen=arr.slice(0,3).map(x=>x.ink);
+  const L=targetLab[0];
+  const hasWhite=brandInks.find(i=> /white/i.test(i.name)), hasBlack=brandInks.find(i=> /black/i.test(i.name));
+  if(L>70 && hasWhite && !chosen.includes(hasWhite)) chosen.push(hasWhite);
+  if(L<30 && hasBlack && !chosen.includes(hasBlack)) chosen.push(hasBlack);
+  return chosen.slice(0,4);
+}
+
+function computeAllRecipes(){
+  const inks=BRANDS[state.brand];
+  const capDrops={S:20,M:40,L:80}[state.cap];
+  const results= state.swatches.map(hx=>{
+    const subset=pickSubset(hx, inks);
+    const w=solveWeights(hexToRgb(hx), subset);
+    const comp=subset.map((ink,i)=>({ink, w:w[i]})).filter(x=>x.w>0.02).sort((a,b)=>b.w-a.w).slice(0,4);
+    const sum=comp.reduce((s,c)=> s+c.w,0) || 1; comp.forEach(c=> c.w/=sum);
+    const raw=comp.map(c=> c.w*capDrops); const drops=raw.map(x=> Math.max(0, Math.round(x)));
+    let diff=capDrops - drops.reduce((s,x)=>s+x,0);
+    while(diff!==0){ const idx=drops.indexOf(Math.max(...drops)); drops[idx] += (diff>0?1:-1); diff=capDrops - drops.reduce((s,x)=>s+x,0); }
+    comp.forEach((c,i)=> c.drops=drops[i]);
+    return {hex:hx, comp, total:capDrops};
+  });
+  state._results=results; renderRecipes();
+}
+
+function renderRecipes(){
+  recipes.innerHTML='';
+  const unit = state.tier==='basic' ? 'drops' : unitSel.value;
+  state._results.forEach(res=>{
+    const card=document.createElement('div'); card.className='recipe';
+    const sw=document.createElement('div'); sw.className='sw'; sw.style.background=res.hex;
+    const body=document.createElement('div');
+    const hdr=document.createElement('div'); hdr.style.fontWeight='700'; hdr.textContent=res.hex;
+    const meta=document.createElement('div'); meta.className='hint'; meta.textContent=`${state.brand} • ${state.cap} • total ${res.total} drops`;
+    const list=document.createElement('div'); list.className='inkrow';
+    res.comp.forEach(c=>{
+      let value=''; if(unit==='drops'){ value=`${c.drops} drops` }
+      else if(unit==='percent'){ value=`${Math.round(c.w*100)}%` }
+      else if(unit==='ml'){ value=`${(c.drops*0.05).toFixed(2)} ml` }
+      else if(unit==='oz'){ value=`${(c.drops*0.05/29.5735).toFixed(3)} oz` }
+      const chip=document.createElement('div'); chip.className='chip'; chip.textContent=`${c.ink.name}: ${value}`; list.appendChild(chip);
+    });
+    body.appendChild(hdr); body.appendChild(meta); body.appendChild(list);
+    card.appendChild(sw); card.appendChild(body); recipes.appendChild(card);
+  });
+}
+
+function flash(m){ statusChip.textContent=m; setTimeout(()=> statusChip.textContent='Ready', 1100); }
+
+// Save/Load/Export (Pro only)
+btnSave.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; }
+  const payload={v:3.1, studio:studioInput?.value||'', client:clientInput?.value||'', date:dateInput?.value||'', placement:placementInput?.value||'',
+    brand:state.brand, cap:state.cap, unit:unitSel.value, swatches:state.swatches};
+  const blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='project.tatmix'; a.click();
+};
+btnLoad.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; } loadInput.click(); };
+loadInput.onchange= async (e)=>{
+  const f=e.target.files[0]; if(!f) return; const text=await f.text();
+  try{ const p=JSON.parse(text); state.brand=p.brand||state.brand; brandSel.value=state.brand; state.cap=p.cap||state.cap; capSel.value=state.cap; state.swatches=p.swatches||state.swatches;
+    if(p.studio){ studioInput.value=p.studio } if(p.client){ clientInput.value=p.client } if(p.date){ dateInput.value=p.date } if(p.placement){ placementInput.value=p.placement }
+    renderPalette(); computeAllRecipes(); }catch(err){ alert('Invalid file'); }
+};
+
+function safeName(s){return (s||'').toString().trim().replace(/[^a-z0-9\\-_. ]/gi,'').replace(/\\s+/g,'_').slice(0,60) || 'Untitled';}
+btnExportPNG.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; }
+  if(!state._results.length){ alert('Nothing to export'); return; }
+  const out=document.createElement('canvas'); drawExport(out); const url=out.toDataURL('image/png');
+  const now=new Date(); const y=now.getFullYear(); const m=String(now.getMonth()+1).padStart(2,'0'); const d=String(now.getDate()).padStart(2,'0');
+  const who = [clientInput?.value, studioInput?.value].filter(Boolean).map(safeName).join('_');
+  const fname = `TattooMix_${y}-${m}-${d}${who?('_'+who):''}.png`;
+  const a=document.createElement('a'); a.href=url; a.download=fname; a.click();
+};
+btnExportPDF.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; }
+  if(!state._results.length){ alert('Nothing to print'); return; }
+  const out=document.createElement('canvas'); drawExport(out);
+  const url=out.toDataURL('image/png');
+  const now=new Date(); const y=now.getFullYear(); const m=String(now.getMonth()+1).padStart(2,'0'); const d=String(now.getDate()).padStart(2,'0');
+  const who = [clientInput?.value, studioInput?.value].filter(Boolean).join(' • ');
+  const title = `TattooMix ${y}-${m}-${d}${who?(' — '+who):''}`;
+  const w=window.open('','_blank');
+  w.document.write('<html><head><title>'+title+'</title><style>body{margin:0}</style></head><body><img src=\"'+url+'\" style=\"width:100%\"></body></html>');
+  w.document.close(); w.focus(); w.print();
+};
+
+function drawExport(cvs){
+  // Layout: Title (top), meta line, left column = image + palette, right column = recipes
+  const REC_H = 108; // row height
+  const leftW  = 760;
+  const rightW = 1120;
+  const colsGap= 80;
+  const topPad = 120;
+  const paletteRows = Math.ceil(state.swatches.length / 8);
+  const recipesH = Math.max(REC_H*state._results.length + 40, 600);
+  const leftHBase = 380 + paletteRows*90;
+  const H = topPad + Math.max(leftHBase, recipesH) + 120;
+  const W = leftW + colsGap + rightW + 80;
+
+  cvs.width=W; cvs.height=H; const g=cvs.getContext('2d');
+  g.fillStyle='#0b0f15'; g.fillRect(0,0,W,H);
+
+  // Title + meta
+  g.fillStyle='#e8edf3'; g.font='bold 44px Inter'; g.fillText('TattooMix — Reference & Mix Sheet', 40, 70);
+  g.font='18px Inter'; g.fillStyle='#9aa4b4';
+  const metaLine = `Brand: ${state.brand} • Cap: ${state.cap} ${studioInput?.value? '• Studio: '+studioInput.value : ''} ${clientInput?.value? '• Client: '+clientInput.value : ''} ${placementInput?.value? '• Placement: '+placementInput.value : ''} ${dateInput?.value? '• Date: '+dateInput.value : ''}`;
+  g.fillText(metaLine, 40, 100);
+
+  // Left column
+  let x = 40, y = topPad;
+  // Reference image (if exists)
+  if(state._imgBitmap){
+    const maxW=700, maxH=420;
+    let w=state._imgBitmap.width, h=state._imgBitmap.height;
+    const sc=Math.min(maxW/w, maxH/h);
+    w=Math.round(w*sc); h=Math.round(h*sc);
+    g.fillStyle='#121926'; g.fillRect(x, y, maxW, maxH);
+    const ix = x + Math.round((maxW-w)/2), iy=y + Math.round((maxH-h)/2);
+    g.drawImage(state._imgBitmap, ix, iy, w, h);
+    g.strokeStyle='#2a3450'; g.lineWidth=3; g.strokeRect(x, y, maxW, maxH);
+    y += maxH + 24;
+  }
+
+  // Palette
+  g.fillStyle='#e8edf3'; g.font='bold 24px Inter'; g.fillText('Palette', x, y+4);
+  y += 26;
+  let px=x, py=y;
+  state.swatches.forEach((hx, i)=>{
+    g.fillStyle=hx; g.beginPath(); g.arc(px+22,py+22,22,0,Math.PI*2); g.fill();
+    g.strokeStyle='#2a3450'; g.lineWidth=2; g.stroke();
+    g.fillStyle='#9aa4b4'; g.font='14px Inter'; g.fillText(hx, px-6, py+58);
+    px += 84; if((i+1)%8===0){ px = x; py += 90; }
+  });
+
+  // Right column - recipes
+  let ry = topPad;
+  const rx = leftW + colsGap;
+  g.fillStyle='#e8edf3'; g.font='bold 24px Inter'; g.fillText('Mix Recipes', rx, ry-12);
+  state._results.forEach((res, idx)=>{
+    const blockY = ry + idx*REC_H;
+    g.fillStyle='#10141c'; g.strokeStyle='#2a3450'; g.lineWidth=3;
+    g.fillRect(rx, blockY, rightW, REC_H-10); g.strokeRect(rx, blockY, rightW, REC_H-10);
+    // swatch
+    g.fillStyle=res.hex; g.fillRect(rx+18, blockY+18, 64, 64);
+    // text
+    g.fillStyle='#e8edf3'; g.font='bold 18px Inter'; g.fillText(res.hex, rx+96, blockY+34);
+    g.fillStyle='#9aa4b4'; g.font='16px Inter'; g.fillText(`Total ${res.total} drops`, rx+96, blockY+56);
+    g.fillStyle='#cfe1ff'; g.font='16px Inter'; let cy=blockY+34; let cx=rx+360;
+    res.comp.forEach(c=>{ g.fillText(`${c.ink.name}: ${c.drops} drops`, cx, cy); cy+=20; });
+  });
+}
+
+// Helpers
+function rgbToHex([r,g,b]){ return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('').toUpperCase(); }
+function hexToRgb(hx){ hx=hx.replace('#',''); return [parseInt(hx.slice(0,2),16),parseInt(hx.slice(2,4),16),parseInt(hx.slice(4,6),16)]; }
+
+// Init
+renderPalette(); computeAllRecipes(); setTier('basic');
+</script>
+</body>
+</html>
