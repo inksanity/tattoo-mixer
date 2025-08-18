@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'><title>Tattoo Lab</title></head><body><div class='app'></div>
+<!-- Config + Firebase SDKs (Compat) -->
+<script src="./config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<!-- Unlock Pro Modal -->
+<div id="unlockModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);align-items:center;justify-content:center;z-index:40">
+  <div class="dialog">
+    <h3 style="margin:0 0 8px 0">Unlock Tattoo Lab Pro</h3>
+    <p class="hint" style="margin:0 0 8px 0">Enter your license key to enable Pro features on this device.</p>
+    <input id="licenseInput" placeholder="TATLAB-XXXX-XXXX" />
+    <div class="row" style="margin-top:8px">
+      <button class="btn" id="unlockCancel">Cancel</button>
+      <button class="btn primary" id="unlockConfirm">Unlock</button>
+    </div>
+    <div class="hint" id="unlockStatus" style="margin-top:6px"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body></html>
