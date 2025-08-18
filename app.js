@@ -1,4 +1,23 @@
-
+// --- Safari/iPad fix: roundRect polyfill ---
+(function(){
+  const P = CanvasRenderingContext2D && CanvasRenderingContext2D.prototype;
+  if (P && !P.roundRect) {
+    P.roundRect = function(x, y, w, h, r) {
+      r = Math.min(r || 0, Math.abs(w)/2, Math.abs(h)/2);
+      this.beginPath();
+      this.moveTo(x + r, y);
+      this.lineTo(x + w - r, y);
+      this.arcTo(x + w, y, x + w, y + r, r);
+      this.lineTo(x + w, y + h - r);
+      this.arcTo(x + w, y + h, x + w - r, y + h, r);
+      this.lineTo(x + r, y + h);
+      this.arcTo(x, y + h, x, y + h - r, r);
+      this.lineTo(x, y + r);
+      this.arcTo(x, y, x + r, y, r);
+      return this; // allow chaining like native
+    };
+  }
+})();
 // PWA boot
 if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('service-worker.js'); }); }
 const root = document.documentElement;
