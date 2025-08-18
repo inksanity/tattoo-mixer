@@ -3,30 +3,22 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Tattoo Lab — PWA (Basic & Pro)</title>
+<title>Tattoo Lab — v4e</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0b0e13">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="icon" type="image/png" href="icons/icon-64.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230b0e13'/%3E%3Ctext x='50%' y='54%' text-anchor='middle' font-family='Arial' font-size='28' fill='%23ff7a1a' font-weight='700'%3ETL%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0b0e13; --panel:#0f131b; --panel-2:#0c0f15; --stroke:#1f2736; --stroke-2:#2a354b;
-  --text:#eef2f8; --muted:#9fb0c9; --accent:#ff7a1a; --shadow:0 14px 28px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
-}
-:root.light{
-  --bg:#f6f7fb; --panel:#ffffff; --panel-2:#f3f5f9; --stroke:#dbe1ec; --stroke-2:#c8d2e6;
-  --text:#0b1220; --muted:#5b6b82; --accent:#ff6428; --shadow:0 8px 16px rgba(0,0,0,.07), inset 0 1px 0 rgba(255,255,255,.7);
-}
+:root{ --bg:#0b0e13; --panel:#0f131b; --panel-2:#0c0f15; --stroke:#1f2736; --stroke-2:#2a354b; --text:#eef2f8; --muted:#9fb0c9; --accent:#ff7a1a; --shadow:0 14px 28px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05); }
+:root.light{ --bg:#f6f7fb; --panel:#ffffff; --panel-2:#f3f5f9; --stroke:#dbe1ec; --stroke-2:#c8d2e6; --text:#0b1220; --muted:#5b6b82; --accent:#ff6428; --shadow:0 8px 16px rgba(0,0,0,.07), inset 0 1px 0 rgba(255,255,255,.7); }
 *{box-sizing:border-box} html,body{height:100%}
 body{margin:0;background:radial-gradient(1200px 1200px at 10% -10%, #122033 0%, var(--bg) 45%) fixed;color:var(--text);font-family:Inter, system-ui,-apple-system,Segoe UI,Roboto,Arial;transition:background .2s ease,color .2s ease}
 .app{display:grid;grid-template-rows:auto 1fr;min-height:100%}
 .appbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--stroke);background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.02));position:sticky;top:0;z-index:5}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800}
-.brand img{width:28px;height:28px;border-radius:7px}
 .badge{padding:6px 10px;border:1px solid var(--stroke);border-radius:999px;background:var(--panel-2);color:var(--text)}
 .segment{display:flex;gap:6px;padding:6px;border-radius:999px;border:1px solid var(--stroke);background:var(--panel-2);box-shadow:var(--shadow)}
 .segment .seg{padding:8px 14px;border-radius:999px;color:var(--muted);cursor:pointer;border:1px solid transparent;background:transparent}
@@ -40,15 +32,7 @@ main{display:grid;grid-template-columns:minmax(280px,58%) minmax(320px,1fr);gap:
 .hint{color:var(--muted);font-size:12px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 
-/* Inputs */
-select,input,textarea{
-  background:var(--panel-2);
-  border:1px solid var(--stroke-2); color:var(--text);
-  border-radius:12px; padding:10px 12px; min-height:42px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
-  -webkit-appearance:none; appearance:none;
-}
-:root.light select,:root.light input,:root.light textarea{box-shadow:none}
+select,input,textarea{ background:var(--panel-2); border:1px solid var(--stroke-2); color:var(--text); border-radius:12px; padding:10px 12px; min-height:42px; -webkit-appearance:none; appearance:none; }
 textarea{min-height:80px; resize:vertical}
 select{ background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;%235b6b82&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><polyline points=&quot;6 9 12 15 18 9&quot;/></svg>'); background-repeat:no-repeat; background-position: right 10px center; padding-right:34px }
 
@@ -61,46 +45,30 @@ select{ background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://w
 #canvasWrap{height:54vh;border:1px solid var(--stroke);border-radius:18px;background:radial-gradient(600px 400px at 30% 20%,#0f1b2a 0%,#0b1019 55%);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
 :root.light #canvasWrap{background:#f3f5f9}
 canvas{max-width:100%;max-height:100%;display:block}
+.marker{position:absolute; width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,.95); color:#0b1220; display:flex; align-items:center; justify-content:center; font-weight:800; border:2px solid #ff7a1a; box-shadow:0 8px 14px rgba(0,0,0,.35); transform:translate(-50%,-50%); pointer-events:none}
+.marker.dim{opacity:.35;filter:grayscale(60%)}
 
-/* Eyedropper */
-.toolrow{display:flex;gap:10px;align-items:center}
-.badgeTiny{padding:4px 8px;border-radius:999px;border:1px solid var(--stroke);background:var(--panel-2);color:var(--text);font-size:12px}
-#loupe{position:absolute; width:90px; height:90px; border-radius:50%; border:2px solid var(--stroke-2); box-shadow:0 10px 20px rgba(0,0,0,.2); display:none; pointer-events:none; overflow:hidden; background:var(--panel)}
-#loupe canvas{transform:scale(3); transform-origin:top left}
-
-/* Metadata grid (Pro) */
-.metaGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
-.metaGrid > div{display:flex;flex-direction:column;gap:6px;min-height:64px}
-
-/* Swatches */
 #paletteStrip{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}
-.square{width:50px;height:50px;border-radius:12px;border:1px solid var(--stroke);box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 8px 18px rgba(0,0,0,.25);position:relative}
-:root.light .square{box-shadow:0 6px 12px rgba(10,18,32,.08), inset 0 1px 0 rgba(255,255,255,.6)}
-.slabel{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font-size:10px;color:var(--muted);}
+.square{width:72px;height:72px;border-radius:16px;position:relative;background:var(--chipColor);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 16px rgba(0,0,0,.25)}
+.square::after{content:''; position:absolute; inset:0; background:radial-gradient(120% 80% at 25% 20%, rgba(255,255,255,.35), rgba(255,255,255,.15) 30%, rgba(255,255,255,0) 70%); mix-blend-mode:screen; pointer-events:none}
+.slabel{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font-size:10px;color:var(--muted); width:max-content;}
 
-/* Pro 3D splats */
-.splat{position:relative;width:72px;height:72px;filter:drop-shadow(0 10px 16px rgba(0,0,0,.25));cursor:pointer}
-.splat svg{width:100%;height:100%}
-.splat .shine{position:absolute;inset:0;background:radial-gradient(120% 80% at 25% 20%, rgba(255,255,255,.55) 0%, rgba(255,255,255,.25) 22%, rgba(255,255,255,0) 60%);mix-blend-mode:screen;border-radius:50%;pointer-events:none}
+.svgSplat{position:relative;width:84px;height:84px; filter: drop-shadow(0 10px 16px rgba(0,0,0,.25));}
 
-#recipes{max-height:calc(100vh - 220px);overflow:auto;padding:6px}
+#recipes{max-height:calc(100vh - 260px);overflow:auto;padding:6px}
 .recipe{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--stroke);border-radius:18px;padding:12px;display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;margin-bottom:12px}
-:root.light .recipe{background:#fff}
 .sw{width:56px;height:56px;border-radius:12px;border:1px solid var(--stroke)}
 .inkrow{display:flex;flex-wrap:wrap;gap:8px}
 .chip{display:inline-flex;gap:6px;align-items:center;border-radius:999px;padding:6px 10px;background:var(--panel-2);border:1px solid var(--stroke-2);color:var(--text);box-shadow:var(--shadow)}
 
 .toolbar{position:sticky;bottom:0;z-index:4;margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--stroke);background:linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.08));backdrop-filter: blur(8px)}
-
-/* Upgrade modal */
-#modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:20}
-.dialog{width:min(520px,92vw);background:var(--panel);border:1px solid var(--stroke);border-radius:18px;box-shadow:var(--shadow);padding:18px}
+.dialog{background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:16px;max-width:520px;box-shadow:var(--shadow)}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="appbar">
-    <div class="brand"><img src="icons/icon-64.png" alt=""><span>Tattoo Lab</span> <span class="badge" id="tierBadge">Basic</span> <span class="badge">PWA</span></div>
+    <div class="brand"><span>Tattoo Lab</span> <span class="badge" id="tierBadge">Basic</span> <span class="badge">PWA</span></div>
     <div class="segment" role="tablist" aria-label="Mode">
       <button class="seg active" id="segBasic">Basic</button>
       <button class="seg" id="segPro">Pro</button>
@@ -127,6 +95,8 @@ canvas{max-width:100%;max-height:100%;display:block}
           <button class="btn locked" id="btnExtract">Auto‑extract</button>
           <label class="hint">K</label>
           <select id="kColors" disabled><option>5</option><option selected>6</option><option>7</option><option>8</option></select>
+          <label class="hint">Markers</label>
+          <select id="markerSel"><option value="on" selected>On</option><option value="off">Off</option></select>
           <input type="file" id="fileInput" accept="image/*" style="display:none" />
         </div>
       </header>
@@ -138,15 +108,7 @@ canvas{max-width:100%;max-height:100%;display:block}
           <select id="capSel"><option value="S">Small (20)</option><option value="M" selected>Medium (40)</option><option value="L">Large (80)</option></select>
           <label class="hint">Units</label>
           <select id="unitSel" disabled><option value="drops" selected>Drops</option><option value="percent">%</option><option value="ml">ml</option><option value="oz">oz</option></select>
-          <span class="badgeTiny" id="statusChip">Ready</span>
-        </div>
-
-        <!-- Pro-only metadata -->
-        <div class="metaGrid" id="metaGrid" style="display:none">
-          <div><label class="hint">Studio / Artist</label><input id="studioInput" placeholder="Studio / Artist"/></div>
-          <div><label class="hint">Client</label><input id="clientInput" placeholder="Client"/></div>
-          <div><label class="hint">Date</label><input id="dateInput" type="date"/></div>
-          <div><label class="hint">Placement</label><input id="placementInput" placeholder="Forearm, Upper back…"/></div>
+          <span class="badge" id="statusChip">Ready</span>
         </div>
 
         <div class="toolrow" style="margin:8px 0">
@@ -155,17 +117,18 @@ canvas{max-width:100%;max-height:100%;display:block}
         </div>
 
         <div id="canvasWrap">
-          <div id="loupe"><canvas id="loupeCanvas" width="90" height="90"></canvas></div>
+          <div id="loupe" style="position:absolute;display:none"><canvas id="loupeCanvas" width="90" height="90"></canvas></div>
           <canvas id="canvas" width="0" height="0"></canvas>
         </div>
         <div id="paletteStrip"></div>
 
         <div class="toolbar">
-          <div class="hint" id="tip">Basic trial: manual Eyedropper + drops only. Pro unlocks auto‑extract, save/export, session fields, and Pro palette styles.</div>
+          <div class="hint" id="tip">Basic trial: manual Eyedropper + drops only. Pro unlocks auto‑extract, save/export, %, ml, oz, session fields, and 3D splats.</div>
           <div class="row" id="proOnlyControls" style="display:flex">
-            <button class="btn" id="btnStylePill">3D Buttons</button>
-            <button class="btn" id="btnStyleSplat">Ink Splats</button>
-            <button class="btn" id="btnUpgrade" style="display:inline-flex">Upgrade to Pro</button>
+            <button class="btn" id="btnStyleSquare">3D Squares</button>
+            <button class="btn" id="btnStyleSplat">Ink Splats (SVG)</button>
+            <button class="btn" id="btnUpgrade">Upgrade to Pro</button>
+            <label class="hint" style="margin-left:6px"><input id="exportMarkers" type="checkbox" checked style="margin-right:6px" />Include markers on export</label>
           </div>
         </div>
       </div>
@@ -183,24 +146,31 @@ canvas{max-width:100%;max-height:100%;display:block}
   </main>
 </div>
 
-<div id="modal">
+<!-- Upgrade modal -->
+<div id="modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);align-items:center;justify-content:center;z-index:20">
   <div class="dialog">
     <h3 style="margin:0 0 8px 0">Tattoo Lab Pro</h3>
     <p class="hint" style="margin:0 0 12px 0">Auto‑extract palettes, save/load sessions, export printable mix sheets, 3D splat palettes, and more.</p>
-    <div class="row">
-      <button class="btn primary" id="closeModal">OK</button>
-    </div>
+    <div class="row"><button class="btn primary" id="closeModal">OK</button></div>
   </div>
 </div>
 
 <script>
-if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('service-worker.js'); }); }
-const root = document.documentElement;
-const savedTheme = localStorage.getItem('tl-theme'); if(savedTheme === 'light'){ root.classList.add('light'); }
-document.getElementById('themeToggle').onclick = ()=>{ root.classList.toggle('light'); localStorage.setItem('tl-theme', root.classList.contains('light') ? 'light' : 'dark'); };
-</script>
+// Register SW
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', ()=> navigator.serviceWorker.register('service-worker.js'));
+}
 
-<script>
+// Theme toggle
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('tl-theme');
+if (savedTheme === 'light') root.classList.add('light');
+document.getElementById('themeToggle').onclick = () => {
+  root.classList.toggle('light');
+  localStorage.setItem('tl-theme', root.classList.contains('light') ? 'light' : 'dark');
+};
+
+// Brand sets (placeholder 10 each)
 const BRANDS = {
   "Radiant": [
     {name:"Radiant White", hex:"#FFFFFF"},
@@ -252,72 +222,94 @@ const BRANDS = {
   ]
 };
 
-const state = { tier:'basic', brand:'Radiant', cap:'S', unit:'drops', swatches:['#F56A6A','#52A7FF','#73D98E','#B093F1'], style:'pill', eyedropper:false, _results:[], _imgBitmap:null };
+// ---- State & DOM ----
+const state = { tier:'basic', brand:'Radiant', cap:'M', unit:'drops', swatches:['#F56A6A','#52A7FF','#73D98E','#B093F1'], style:'square', eyedropper:false, markersOn:true, markers:[], _results:[], _imgBitmap:null, selectedSwatch:-1 };
 const $ = id => document.getElementById(id);
+
 const segBasic=$('segBasic'), segPro=$('segPro'), tierBadge=$('tierBadge');
 const btnImport=$('btnImport'), btnExtract=$('btnExtract'), kSel=$('kColors'), fileInput=$('fileInput');
 const btnSave=$('btnSave'), btnLoad=$('btnLoad'), loadInput=$('loadInput'), btnExportPNG=$('btnExportPNG'), btnExportPDF=$('btnExportPDF');
 const brandSel=$('brandSel'), capSel=$('capSel'), unitSel=$('unitSel');
-const statusChip=$('statusChip'), hdrHint=$('hdrHint'), proOnlyControls=$('proOnlyControls'), tip=$('tip'), modeHint=$('modeHint');
+const statusChip=$('statusChip'), hdrHint=$('hdrHint'), tip=$('tip'), modeHint=$('modeHint');
 const paletteStrip=$('paletteStrip'), recipes=$('recipes');
 const canvas=$('canvas'); const ctx=canvas.getContext('2d',{willReadFrequently:true});
 const btnEyedropper=$('btnEyedropper'), loupe=$('loupe'), loupeCanvas=$('loupeCanvas'), lctx=loupeCanvas.getContext('2d');
-const metaGrid=$('metaGrid'); const studioInput=$('studioInput'); const clientInput=$('clientInput'); const dateInput=$('dateInput'); const placementInput=$('placementInput');
-const btnUpgrade=$('btnUpgrade'); const modal=$('modal'); const closeModal=$('closeModal');
+const markerSel=$('markerSel'); const exportMarkers=$('exportMarkers');
+const modal=$('modal'); const btnUpgrade=$('btnUpgrade'); const closeModal=$('closeModal');
+const btnStyleSquare=$('btnStyleSquare'), btnStyleSplat=$('btnStyleSplat');
 
+// Populate brands
 Object.keys(BRANDS).forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; brandSel.appendChild(o); });
 brandSel.value = state.brand;
 
+// Tier switch
 segBasic.onclick=()=> setTier('basic');
 segPro.onclick  =()=> setTier('pro');
 function setTier(t){
   state.tier=t;
-  segBasic.classList.toggle('active', t==='basic');
-  segPro.classList.toggle('active',   t==='pro');
+  segBasic.classList.toggle('active', t==='basic'); segPro.classList.toggle('active', t==='pro');
   tierBadge.textContent = t==='basic' ? 'Basic' : 'Pro';
   const basic = t==='basic';
   lock(btnSave,basic); lock(btnLoad,basic); lock(btnExportPNG,basic); lock(btnExportPDF,basic);
   lock(btnExtract,basic); kSel.disabled = basic; unitSel.disabled = basic;
-  metaGrid.style.display = basic ? 'none' : 'grid';
-  proOnlyControls.style.display = 'flex';
-  btnUpgrade.style.display = basic ? 'inline-flex' : 'none';
   hdrHint.textContent = basic ? 'Tap with the Eyedropper to add colors (Auto‑extract is Pro)' : 'Import image → Auto‑extract or long‑press to sample areas';
-  tip.textContent     = basic ? 'Basic: manual Eyedropper + drops only. Pro unlocks auto‑extract, save/export, session fields, %, ml, oz, and 3D splats.' : 'Pro: auto‑extract, 3D splats, %, ml, oz.';
+  tip.textContent     = basic ? 'Basic: manual Eyedropper + drops only.' : 'Pro: auto‑extract, save/export, %, ml, oz.';
   modeHint.textContent= basic ? 'Drops only (Basic)' : 'Drops / %, ml, oz (Pro)';
-  renderPalette(); computeAllRecipes();
+  renderPalette(); computeAllRecipes(); drawMarkers();
 }
 function lock(btn, isLocked){ if(isLocked){ btn.classList.add('disabled','locked'); } else { btn.classList.remove('disabled','locked'); } }
 btnUpgrade.onclick = ()=>{ modal.style.display='flex'; };
 closeModal.onclick = ()=>{ modal.style.display='none'; };
 modal.addEventListener('click',(e)=>{ if(e.target===modal) modal.style.display='none'; });
 
+// Import image
 btnImport.onclick=()=> fileInput.click();
-fileInput.onchange=async (e)=>{ const f=e.target.files[0]; if(!f) return; const img=await createImageBitmap(f); state._imgBitmap=img; fitAndDraw(img); };
-function fitAndDraw(img){ const maxW=1600,maxH=900; let w=img.width,h=img.height; const sc=Math.min(1,maxW/w,maxH/h); w=Math.round(w*sc); h=Math.round(h*sc); canvas.width=w; canvas.height=h; ctx.clearRect(0,0,w,h); ctx.drawImage(img,0,0,w,h); }
+fileInput.onchange=async (e)=>{ const f=e.target.files[0]; if(!f) return; const img=await createImageBitmap(f); state._imgBitmap=img; state.markers=[]; fitAndDraw(img); };
+function fitAndDraw(img){
+  const maxW=1600,maxH=900; let w=img.width,h=img.height; const sc=Math.min(1,maxW/w,maxH/h); w=Math.round(w*sc); h=Math.round(h*sc);
+  canvas.width=w; canvas.height=h; ctx.clearRect(0,0,w,h); ctx.drawImage(img,0,0,w,h); drawMarkers();
+}
 
-btnExtract.onclick=()=>{
-  if(state.tier==='basic'){ flash('Pro only'); return; }
+// Markers
+markerSel.onchange = ()=>{ state.markersOn = markerSel.value==='on'; drawMarkers(); };
+function addMarkerFromClientCoords(clientX, clientY){
+  const rect=canvas.getBoundingClientRect(); const x=((clientX-rect.left)/rect.width); const y=((clientY-rect.top)/rect.height);
+  state.markers.push({x:Math.min(1,Math.max(0,x)), y:Math.min(1,Math.max(0,y))}); drawMarkers();
+}
+function drawMarkers(){
+  document.querySelectorAll('.marker').forEach(m=> m.remove());
+  if(!state._imgBitmap || !state.markersOn) return;
+  const rect=canvas.getBoundingClientRect();
+  state.markers.forEach((m,i)=>{
+    const el=document.createElement('div'); el.className='marker';
+    if(state.selectedSwatch>=0 && i!==state.selectedSwatch) el.classList.add('dim');
+    el.textContent = (i+1);
+    el.style.left = (rect.left + m.x*rect.width)+'px';
+    el.style.top  = (rect.top  + m.y*rect.height)+'px';
+    document.body.appendChild(el);
+  });
+}
+
+// Auto-extract (Pro)
+btnExtract.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; }
   if(canvas.width===0){ flash('Load an image first'); return; }
-  const k=parseInt(kSel.value,10); const colors=extractPalette(canvas,k);
-  state.swatches=colors.map(rgbToHex); renderPalette(); computeAllRecipes();
+  const k=parseInt(kSel.value,10);
+  const {colors, coords} = extractPaletteWithCoords(canvas,k);
+  state.swatches=colors.map(rgbToHex);
+  state.markers = coords.map(([x,y])=>({x,y}));
+  renderPalette(); computeAllRecipes(); drawMarkers();
 };
 
-btnEyedropper.onclick=()=>{
-  state.eyedropper = !state.eyedropper;
-  btnEyedropper.classList.toggle('primary', state.eyedropper);
-  flash(state.eyedropper ? 'Eyedropper ON' : 'Eyedropper OFF');
-};
+// Eyedropper
+btnEyedropper.onclick=()=>{ state.eyedropper = !state.eyedropper; btnEyedropper.classList.toggle('primary', state.eyedropper); flash(state.eyedropper ? 'Eyedropper ON' : 'Eyedropper OFF'); };
 function updateLoupe(clientX, clientY){
   if(canvas.width===0) return;
   const rect=canvas.getBoundingClientRect();
   const x=(clientX-rect.left)*(canvas.width/rect.width);
   const y=(clientY-rect.top)*(canvas.height/rect.height);
-  lctx.imageSmoothingEnabled=false;
-  lctx.clearRect(0,0,90,90);
+  lctx.imageSmoothingEnabled=false; lctx.clearRect(0,0,90,90);
   lctx.drawImage(canvas, Math.max(0, x-15), Math.max(0, y-15), 30, 30, 0, 0, 90, 90);
-  loupe.style.left = (clientX-45)+'px';
-  loupe.style.top  = (clientY-105)+'px';
-  loupe.style.display='block';
+  loupe.style.left = (clientX-45)+'px'; loupe.style.top = (clientY-105)+'px'; loupe.style.display='block';
 }
 function pickAt(clientX, clientY){
   const rect=canvas.getBoundingClientRect();
@@ -326,7 +318,9 @@ function pickAt(clientX, clientY){
   const d=ctx.getImageData(Math.max(0,x-2),Math.max(0,y-2),5,5).data;
   let R=0,G=0,B=0,N=0; for(let i=0;i<d.length;i+=4){R+=d[i];G+=d[i+1];B+=d[i+2];N++}
   const hx=rgbToHex([Math.round(R/N),Math.round(G/N),Math.round(B/N)]);
-  state.swatches.push(hx); renderPalette(); computeAllRecipes();
+  state.swatches.push(hx);
+  addMarkerFromClientCoords(clientX, clientY);
+  renderPalette(); computeAllRecipes();
 }
 canvas.addEventListener('mousemove', e=>{ if(state.eyedropper) updateLoupe(e.clientX, e.clientY); });
 canvas.addEventListener('mouseleave', ()=>{ loupe.style.display='none'; });
@@ -334,74 +328,72 @@ canvas.addEventListener('click', e=>{ if(state.eyedropper){ pickAt(e.clientX,e.c
 canvas.addEventListener('touchmove', e=>{ if(state.eyedropper && e.touches[0]) updateLoupe(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
 canvas.addEventListener('touchend', e=>{ loupe.style.display='none'; });
 canvas.addEventListener('touchstart', e=>{ if(state.eyedropper && e.touches[0]){ updateLoupe(e.touches[0].clientX, e.touches[0].clientY);} }, {passive:true});
-canvas.addEventListener('touchend', e=>{ if(state.eyedropper && e.changedTouches[0]){ pickAt(e.changedTouches[0].clientX, e.changedTouches[0].clientY);} });
+canvas.addEventListener('touchend', e=>{ if(state.eyedropper && e.changedTouches[0]){ pickAt(e.changedTouches[0].clientX,e.changedTouches[0].clientY);} });
 
-$('btnStylePill').onclick=()=>{ if(state.tier==='pro'){ state.style='pill'; renderPalette(); } else flash('Pro only'); };
-$('btnStyleSplat').onclick=()=>{ if(state.tier==='pro'){ state.style='splat'; renderPalette(); } else flash('Pro only'); };
-
-brandSel.onchange = ()=>{ state.brand=brandSel.value; computeAllRecipes(); };
-capSel.onchange   = ()=>{ state.cap=capSel.value; computeAllRecipes(); };
-unitSel.onchange  = ()=>{ if(state.tier==='basic'){ unitSel.value='drops'; return; } state.unit=unitSel.value; renderRecipes(); };
-
+// Palette render (square vs svg splat)
 function renderPalette(){
-  const wrap=$('paletteStrip'); wrap.innerHTML='';
-  if(state.tier==='basic'){
-    state.swatches.forEach(hx=>{
-      const d=document.createElement('div'); d.className='square'; d.style.background=hx;
+  paletteStrip.innerHTML='';
+  const style = state.tier==='basic' ? 'square' : state.style;
+  state.swatches.forEach((hx, idx)=>{
+    if(style==='square'){
+      const div=document.createElement('div'); div.className='square'; div.style.setProperty('--chipColor', hx);
+      const label=document.createElement('div'); label.className='slabel'; label.textContent=hx; div.appendChild(label);
+      div.onclick=()=>{ state.selectedSwatch=idx; drawMarkers(); }; paletteStrip.appendChild(div);
+    } else {
+      const wrap=document.createElement('div'); wrap.className='svgSplat';
+      const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('viewBox','0 0 100 100'); svg.style.width='100%'; svg.style.height='100%';
+      const path=document.createElementNS('http://www.w3.org/2000/svg','path'); path.setAttribute('fill',hx);
+      // default splat path (you can replace with your own later)
+      path.setAttribute('d',"M52,8 C63,5 83,12 89,26 C98,36 98,56 90,68 C85,83 63,96 46,92 C33,96 18,88 13,73 C6,62 10,42 20,31 C25,18 38,12 52,8 Z M18,46 C12,46 8,40 9,35 C10,29 16,26 21,28 C26,30 28,36 26,41 C24,44 22,46 18,46 Z M86,44 C82,45 78,42 77,38 C76,33 80,28 85,28 C90,28 94,34 92,39 C91,42 89,44 86,44 Z");
+      svg.appendChild(path);
       const label=document.createElement('div'); label.className='slabel'; label.textContent=hx;
-      d.appendChild(label); wrap.appendChild(d);
-    });
-  }else{
-    if(state.style==='pill'){
-      state.swatches.forEach(hx=>{
-        const d=document.createElement('div'); d.className='square'; d.style.width='56px'; d.style.height='56px'; d.style.borderRadius='16px';
-        d.style.boxShadow='inset 0 10px 18px rgba(255,255,255,.25), inset 0 -14px 20px rgba(0,0,0,.12), 0 18px 28px rgba(0,0,0,.18)';
-        d.style.border='1px solid rgba(0,0,0,.1)'; d.style.background=hx;
-        const label=document.createElement('div'); label.className='slabel'; label.textContent=hx;
-        d.appendChild(label); wrap.appendChild(d);
-      });
-    }else{
-      state.swatches.forEach(hx=>{
-        const wrap2=document.createElement('div'); wrap2.className='splat'; wrap2.title=hx;
-        const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('viewBox','0 0 100 100');
-        const path=document.createElementNS('http://www.w3.org/2000/svg','path'); path.setAttribute('fill',hx);
-        path.setAttribute('d','M50,10 C60,5 80,10 85,25 C95,35 95,55 85,65 C80,80 60,95 45,90 C30,95 15,85 12,70 C5,60 10,40 20,30 C25,15 40,12 50,10 Z');
-        path.setAttribute('filter','url(#drops)');
-        const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
-        const filt=document.createElementNS('http://www.w3.org/2000/svg','filter'); filt.setAttribute('id','drops');
-        const feDrop=document.createElementNS('http://www.w3.org/2000/svg','feDropShadow');
-        feDrop.setAttribute('dx','0'); feDrop.setAttribute('dy','6'); feDrop.setAttribute('stdDeviation','4'); feDrop.setAttribute('flood-color','rgba(0,0,0,.25)');
-        filt.appendChild(feDrop); defs.appendChild(filt); svg.appendChild(defs); svg.appendChild(path);
-        const shine=document.createElement('div'); shine.className='shine';
-        const label=document.createElement('div'); label.className='slabel'; label.textContent=hx;
-        wrap2.appendChild(svg); wrap2.appendChild(shine); wrap2.appendChild(label);
-        wrap.appendChild(wrap2);
-      });
+      wrap.appendChild(svg); wrap.appendChild(label);
+      wrap.onclick=()=>{ state.selectedSwatch=idx; drawMarkers(); };
+      paletteStrip.appendChild(wrap);
     }
-  }
+  });
 }
 
+// Mixing math (simplified; drops only, cap sizes baked)
 function hexToRgb(hx){ hx=hx.replace('#',''); return [parseInt(hx.slice(0,2),16),parseInt(hx.slice(2,4),16),parseInt(hx.slice(4,6),16)]; }
 function rgbToHex([r,g,b]){ return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('').toUpperCase(); }
 function srgbToLinear(c){ c/=255; return c<=0.04045? c/12.92 : Math.pow((c+0.055)/1.055,2.4); }
 function rgbToXyz([r,g,b]){ const R=srgbToLinear(r),G=srgbToLinear(g),B=srgbToLinear(b); return [R*0.4124564+G*0.3575761+B*0.1804375, R*0.2126729+G*0.7151522+B*0.0721750, R*0.0193339+G*0.1191920+B*0.9503041]; }
 function xyzToLab([X,Y,Z]){ const Xr=0.95047,Yr=1.00000,Zr=1.08883; function f(t){return t>0.008856? Math.cbrt(t):(7.787*t+16/116)} const fx=f(X/Xr),fy=f(Y/Yr),fz=f(Z/Zr); return [116*fy-16, 500*(fx-fy), 200*(fy-fz)]; }
 function rgbToLab(rgb){ return xyzToLab(rgbToXyz(rgb)); }
-function distLab(a,b){ const dL=a[0]-b[0],da=a[1]-b[1],db=a[2]-b[2]; return Math.sqrt(dL*dL+da*da+db*db); }
+function distLab(a,b){ return Math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2 + (a[2]-b[2])**2); }
 
-function extractPalette(cv,k){
-  const w=cv.width,h=cv.height; const data=ctx.getImageData(0,0,w,h).data;
-  const step=Math.max(1, Math.floor((w*h)/5000)); const pts=[];
-  for(let i=0;i<data.length;i+=4*step){ pts.push([data[i],data[i+1],data[i+2]]) }
-  const centers=[]; for(let i=0;i<k;i++) centers.push(pts[Math.floor(Math.random()*pts.length)]);
-  const labCenters=centers.map(rgbToLab); let changed=true,iter=0;
+function extractPaletteWithCoords(cv,k){
+  const ctx=cv.getContext('2d',{willReadFrequently:true}); const w=cv.width,h=cv.height; const data=ctx.getImageData(0,0,w,h).data;
+  const step=Math.max(1, Math.floor((w*h)/5000)); const pts=[]; const pos=[];
+  for(let i=0;i<data.length;i+=4*step){ const idx=i/4; const x=idx%w; const y=(idx-x)/w; pts.push([data[i],data[i+1],data[i+2]]); pos.push([x/w, y/h]); }
+  const centers=[], labCenters=[];
+  for(let i=0;i<k;i++){ const p=pts[Math.floor(Math.random()*pts.length)]; centers.push(p); labCenters.push(rgbToLab(p)); }
+  let changed=true,iter=0; const assign=new Array(pts.length).fill(0);
   while(changed && iter<12){ iter++; changed=false;
     const buckets=Array.from({length:k},()=>({sum:[0,0,0],n:0}));
-    for(const p of pts){ const lp=rgbToLab(p); let bi=0,bd=1e9; for(let j=0;j<k;j++){ const d=distLab(lp,labCenters[j]); if(d<bd){bd=d; bi=j} } const b=buckets[bi]; b.sum[0]+=p[0]; b.sum[1]+=p[1]; b.sum[2]+=p[2]; b.n++; }
+    for(let i=0;i<pts.length;i++){ const lp=rgbToLab(pts[i]); let bi=0,bd=1e9; for(let j=0;j<k;j++){ const d=distLab(lp,labCenters[j]); if(d<bd){bd=d; bi=j} } assign[i]=bi; const b=buckets[bi]; b.sum[0]+=pts[i][0]; b.sum[1]+=pts[i][1]; b.sum[2]+=pts[i][2]; b.n++; }
     for(let j=0;j<k;j++){ if(buckets[j].n>0){ const nc=[buckets[j].sum[0]/buckets[j].n,buckets[j].sum[1]/buckets[j].n,buckets[j].sum[2]/buckets[j].n]; const nl=rgbToLab(nc); if(distLab(nl,labCenters[j])>1){ changed=true; labCenters[j]=nl; centers[j]=nc; } } }
   }
+  const coords = [];
+  for(let j=0;j<k;j++){
+    let bestI=-1, bestD=1e9; const cl=labCenters[j];
+    for(let i=0;i<pts.length;i++){ if(assign[i]!==j) continue; const d=distLab(rgbToLab(pts[i]), cl); if(d<bestD){ bestD=d; bestI=i; } }
+    coords.push(bestI>=0 ? pos[bestI] : [0.5,0.5]);
+  }
   centers.sort((a,b)=> rgbToLab(b)[0]-rgbToLab(a)[0]);
-  return centers.map(c=> [Math.round(c[0]),Math.round(c[1]),Math.round(c[2])]);
+  return {colors:centers.map(c=>[Math.round(c[0]),Math.round(c[1]),Math.round(c[2])]), coords};
+}
+
+function pickSubset(targetHex, brandInks){
+  const targetLab=rgbToLab(hexToRgb(targetHex));
+  const arr=brandInks.map(ink=>({ink, d:distLab(targetLab, rgbToLab(hexToRgb(ink.hex)))})).sort((a,b)=>a.d-b.d);
+  const chosen=arr.slice(0,3).map(x=>x.ink);
+  const L=targetLab[0];
+  const hasWhite=brandInks.find(i=> /white/i.test(i.name)), hasBlack=brandInks.find(i=> /black/i.test(i.name));
+  if(L>70 && hasWhite && !chosen.includes(hasWhite)) chosen.push(hasWhite);
+  if(L<30 && hasBlack && !chosen.includes(hasBlack)) chosen.push(hasBlack);
+  return chosen.slice(0,4);
 }
 
 function solveWeights(targetRgb, subset){
@@ -412,17 +404,6 @@ function solveWeights(targetRgb, subset){
   function grad(w){ const y=mulAw(w); const r=[y[0]-c[0],y[1]-c[1],y[2]-c[2]]; const g=Array(n).fill(0); for(let j=0;j<n;j++){ g[j]=2*(A[j][0]*r[0]+A[j][1]*r[1]+A[j][2]*r[2]) } return g; }
   function projectSimplex(v){ const u=[...v].sort((a,b)=>b-a); let css=0,rho=0; for(let i=0;i<v.length;i++){ css+=u[i]; if(u[i]+(1-css)/(i+1)>0) rho=i } const theta=(1-u.slice(0,rho+1).reduce((s,x)=>s+x,0))/(rho+1); return v.map(x=> Math.max(0,x+theta)); }
   let t=0.1; for(let it=0; it<400; it++){ const g=grad(w); w=w.map((wi,i)=> wi - t*g[i]); w=projectSimplex(w); t*=0.98; } return w;
-}
-
-function pickSubset(targetHex, brandInks){
-  const targetLab=rgbToLab(hexToRgb(targetHex));
-  const arr=brandInks.map(ink=>({ink, d:distLab(targetLab, rgbToLab(hexToRgb(ink.hex)))})); arr.sort((a,b)=>a.d-b.d);
-  const chosen=arr.slice(0,3).map(x=>x.ink);
-  const L=targetLab[0];
-  const hasWhite=brandInks.find(i=> /white/i.test(i.name)), hasBlack=brandInks.find(i=> /black/i.test(i.name));
-  if(L>70 && hasWhite && !chosen.includes(hasWhite)) chosen.push(hasWhite);
-  if(L<30 && hasBlack && !chosen.includes(hasBlack)) chosen.push(hasBlack);
-  return chosen.slice(0,4);
 }
 
 function computeAllRecipes(){
@@ -453,11 +434,7 @@ function renderRecipes(){
     const meta=document.createElement('div'); meta.className='hint'; meta.textContent=`${state.brand} • ${state.cap} • total ${res.total} drops`;
     const list=document.createElement('div'); list.className='inkrow';
     res.comp.forEach(c=>{
-      let value=''; if(unit==='drops'){ value=`${c.drops} drops` }
-      else if(unit==='percent'){ value=`${Math.round(c.w*100)}%` }
-      else if(unit==='ml'){ value=`${(c.drops*0.05).toFixed(2)} ml` }
-      else if(unit==='oz'){ value=`${(c.drops*0.05/29.5735).toFixed(3)} oz` }
-      const chip=document.createElement('div'); chip.className='chip'; chip.textContent=`${c.ink.name}: ${value}`; list.appendChild(chip);
+      const chip=document.createElement('div'); chip.className='chip'; chip.textContent=`${c.ink.name}: ${c.drops} drops`; list.appendChild(chip);
     });
     body.appendChild(hdr); body.appendChild(meta); body.appendChild(list);
     card.appendChild(sw); card.appendChild(body); recipes.appendChild(card);
@@ -466,88 +443,14 @@ function renderRecipes(){
 
 function flash(m){ statusChip.textContent=m; setTimeout(()=> statusChip.textContent='Ready', 1100); }
 
-btnSave.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; }
-  const payload={v:4.1, studio:studioInput?.value||'', client:clientInput?.value||'', date:dateInput?.value||'', placement:placementInput?.value||'',
-    brand:state.brand, cap:state.cap, unit:unitSel.value, swatches:state.swatches};
-  const blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='project.tatmix'; a.click();
-};
-btnLoad.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; } loadInput.click(); };
-loadInput.onchange= async (e)=>{
-  const f=e.target.files[0]; if(!f) return; const text=await f.text();
-  try{ const p=JSON.parse(text); state.brand=p.brand||state.brand; brandSel.value=state.brand; state.cap=p.cap||state.cap; capSel.value=state.cap; state.swatches=p.swatches||state.swatches;
-    if(p.studio){ studioInput.value=p.studio } if(p.client){ clientInput.value=p.client } if(p.date){ dateInput.value=p.date } if(p.placement){ placementInput.value=p.placement }
-    renderPalette(); computeAllRecipes(); }catch(err){ alert('Invalid file'); }
-};
+// Style buttons
+btnStyleSquare.onclick = ()=>{ if(state.tier==='basic'){ flash('Pro only'); return; } state.style='square'; renderPalette(); };
+btnStyleSplat.onclick  = ()=>{ if(state.tier==='basic'){ flash('Pro only'); return; } state.style='splat';  renderPalette(); };
 
-function safeName(s){return (s||'').toString().trim().replace(/[^a-z0-9\-_. ]/gi,'').replace(/\s+/g,'_').slice(0,60) || 'Untitled';}
-btnExportPNG.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; }
-  if(!state._results.length){ alert('Nothing to export'); return; }
-  const out=document.createElement('canvas'); drawExport(out); const url=out.toDataURL('image/png');
-  const now=new Date(); const y=now.getFullYear(); const m=String(now.getMonth()+1).padStart(2,'0'); const d=String(now.getDate()).padStart(2,'0');
-  const who = [clientInput?.value, studioInput?.value].filter(Boolean).map(safeName).join('_');
-  const fname = `TattooLab_${y}-${m}-${d}${who?('_'+who):''}.png`;
-  const a=document.createElement('a'); a.href=url; a.download=fname; a.click();
-};
-btnExportPDF.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; }
-  if(!state._results.length){ alert('Nothing to print'); return; }
-  const out=document.createElement('canvas'); drawExport(out);
-  const url=out.toDataURL('image/png');
-  const now=new Date(); const y=now.getFullYear(); const m=String(now.getMonth()+1).padStart(2,'0'); const d=String(now.getDate()).padStart(2,'0');
-  const who = [clientInput?.value, studioInput?.value].filter(Boolean).join(' • ');
-  const title = `Tattoo Lab ${y}-${m}-${d}${who?(' — '+who):''}`;
-  const w=window.open('','_blank');
-  w.document.write('<html><head><title>'+title+'</title><style>body{margin:0}</style></head><body><img src="'+url+'" style="width:100%"></body></html>');
-  w.document.close(); w.focus(); w.print();
-};
-
-function drawExport(cvs){
-  const REC_H = 108, leftW=760, rightW=1120, colsGap=80, topPad=120;
-  const paletteRows = Math.ceil(state.swatches.length / 8);
-  const recipesH = Math.max(REC_H*state._results.length + 40, 600);
-  const leftHBase = 380 + paletteRows*90;
-  const H = topPad + Math.max(leftHBase, recipesH) + 120;
-  const W = leftW + colsGap + rightW + 80;
-  cvs.width=W; cvs.height=H; const g=cvs.getContext('2d');
-  const dark = !document.documentElement.classList.contains('light');
-  g.fillStyle= dark ? '#0b0f15' : '#ffffff'; g.fillRect(0,0,W,H);
-  g.fillStyle= dark ? '#e8edf3' : '#0b1220'; g.font='bold 44px Inter'; g.fillText('Tattoo Lab — Reference & Mix Sheet', 40, 70);
-  g.font='18px Inter'; g.fillStyle= dark ? '#9aa4b4' : '#5b6b82';
-  const metaLine = `Brand: ${state.brand} • Cap: ${state.cap} ${studioInput?.value? '• Studio: '+studioInput.value : ''} ${clientInput?.value? '• Client: '+clientInput.value : ''} ${placementInput?.value? '• Placement: '+placementInput.value : ''} ${dateInput?.value? '• Date: '+dateInput.value : ''}`;
-  g.fillText(metaLine, 40, 100);
-  let x = 40, y = topPad;
-  if(state._imgBitmap){
-    const maxW=700, maxH=420; let w=state._imgBitmap.width, h=state._imgBitmap.height;
-    const sc=Math.min(maxW/w, maxH/h); w=Math.round(w*sc); h=Math.round(h*sc);
-    g.fillStyle= dark ? '#121926' : '#f0f3f9'; g.fillRect(x, y, maxW, maxH);
-    const ix = x + Math.round((maxW-w)/2), iy=y + Math.round((maxH-h)/2);
-    g.drawImage(state._imgBitmap, ix, iy, w, h);
-    g.strokeStyle= dark ? '#2a3450' : '#c8d2e6'; g.lineWidth=3; g.strokeRect(x, y, maxW, maxH); y += maxH + 24;
-  }
-  g.fillStyle= dark ? '#e8edf3' : '#0b1220'; g.font='bold 24px Inter'; g.fillText('Palette', x, y+4); y += 26;
-  let px=x, py=y;
-  state.swatches.forEach((hx, i)=>{
-    g.fillStyle=hx; g.beginPath(); g.roundRect(px,py,44,44,10); g.fill();
-    g.strokeStyle=dark ? '#2a3450' : '#c8d2e6'; g.lineWidth=2; g.stroke();
-    g.fillStyle= dark ? '#9aa4b4' : '#5b6b82'; g.font='14px Inter'; g.fillText(hx, px-6, py+64);
-    px += 84; if((i+1)%8===0){ px = x; py += 90; }
-  });
-  let ry = topPad; const rx = leftW + colsGap;
-  g.fillStyle= dark ? '#e8edf3' : '#0b1220'; g.font='bold 24px Inter'; g.fillText('Mix Recipes', rx, ry-12);
-  state._results.forEach((res, idx)=>{
-    const blockY = ry + idx*REC_H;
-    g.fillStyle= dark ? '#10141c' : '#ffffff'; g.strokeStyle= dark ? '#2a3450' : '#c8d2e6'; g.lineWidth=3;
-    g.fillRect(rx, blockY, rightW, REC_H-10); g.strokeRect(rx, blockY, rightW, REC_H-10);
-    g.fillStyle=res.hex; g.fillRect(rx+18, blockY+18, 64, 64);
-    g.fillStyle= dark ? '#e8edf3' : '#0b1220'; g.font='bold 18px Inter'; g.fillText(res.hex, rx+96, blockY+34);
-    g.fillStyle= dark ? '#9aa4b4' : '#5b6b82'; g.font='16px Inter'; g.fillText(`Total ${res.total} drops`, rx+96, blockY+56);
-    g.fillStyle= dark ? '#cfe1ff' : '#2e477b'; g.font='16px Inter'; let cy=blockY+34; let cx=rx+360;
-    res.comp.forEach(c=>{ g.fillText(`${c.ink.name}: ${c.drops} drops`, cx, cy); cy+=20; });
-  });
-}
-
-function rgbToHex([r,g,b]){ return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('').toUpperCase(); }
-function hexToRgb(hx){ hx=hx.replace('#',''); return [parseInt(hx.slice(0,2),16),parseInt(hx.slice(2,4),16),parseInt(hx.slice(4,6),16)]; }
+// Selects & init
+brandSel.onchange = ()=>{ state.brand=brandSel.value; computeAllRecipes(); };
+capSel.onchange   = ()=>{ state.cap=capSel.value; computeAllRecipes(); };
+unitSel.onchange  = ()=>{ if(state.tier==='basic'){ unitSel.value='drops'; return; } renderRecipes(); };
 
 renderPalette(); computeAllRecipes(); setTier('basic');
 </script>
