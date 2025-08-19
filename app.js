@@ -19,13 +19,14 @@
   }
 })();
 
-// PWA boot + theme
-if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('service-worker.js'); }); }
-const root = document.documentElement;
-const savedTheme = localStorage.getItem('tl-theme'); if(savedTheme === 'light'){ root.classList.add('light'); }
-document.getElementById('themeToggle').onclick = ()=>{ root.classList.toggle('light'); localStorage.setItem('tl-theme', root.classList.contains('light') ? 'light' : 'dark'); };
+/*  NOTE:
+    We intentionally DO NOT declare `const root = …` here.
+    `index.html` already defines:
+      const root = document.documentElement;
+    to avoid the "Identifier 'root' has already been declared" error.
+*/
 
-// Brands (10 inks each, placeholder names)
+// ---------- Brands (10 inks each, placeholder names) ----------
 const BRANDS = {
   "Radiant":[
     {name:"Radiant White",hex:"#FFFFFF"},{name:"Real Black",hex:"#111111"},{name:"Blood Red",hex:"#C21807"},
@@ -49,7 +50,7 @@ const BRANDS = {
   ]
 };
 
-// State & DOM
+// ---------- State & DOM ----------
 const state={tier:'basic',brand:'Radiant',cap:'M',unit:'drops',swatches:['#F56A6A','#52A7FF','#73D98E','#B093F1'],style:'pngSquare',eyedropper:false,markersOn:true,markers:[],_results:[],_imgBitmap:null,selectedSwatch:-1};
 const $=id=>document.getElementById(id);
 const segBasic=$('segBasic'), segPro=$('segPro'), tierBadge=$('tierBadge');
@@ -69,10 +70,11 @@ const splatModal=$('splatModal'); const btnSplatConfig=$('btnSplatConfig'); cons
 const historyStack=[]; function pushHistory(){ historyStack.push([...state.swatches]); if(historyStack.length>50) historyStack.shift(); } 
 $('btnUndo').onclick=()=>{ if(!historyStack.length) return; state.swatches=historyStack.pop(); renderPalette(); computeAllRecipes(); drawMarkers(); };
 
+// Populate brands
 Object.keys(BRANDS).forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; brandSel.appendChild(o); }); 
 brandSel.value=state.brand;
 
-// Tier
+// ---------- Tier switching ----------
 segBasic.onclick=()=>setTier('basic'); 
 segPro.onclick=()=>setTier('pro');
 function setTier(t){ 
@@ -92,17 +94,17 @@ btnUpgrade.onclick=()=>{ modal.style.display='flex'; };
 closeModal.onclick=()=>{ modal.style.display='none'; };
 modal.addEventListener('click',(e)=>{ if(e.target===modal) modal.style.display='none'; });
 
-// Import
+// ---------- Import image ----------
 btnImport.onclick=()=>fileInput.click();
 fileInput.onchange=async e=>{ const f=e.target.files[0]; if(!f) return; const img=await createImageBitmap(f); state._imgBitmap=img; state.markers=[]; fitAndDraw(img); };
 function fitAndDraw(img){ const maxW=1600,maxH=900; let w=img.width,h=img.height; const sc=Math.min(1,maxW/w,maxH/h); w=Math.round(w*sc); h=Math.round(h*sc); canvas.width=w; canvas.height=h; ctx.clearRect(0,0,w,h); ctx.drawImage(img,0,0,w,h); drawMarkers(); }
 
-// Markers
+// ---------- Markers ----------
 markerSel.onchange=()=>{ state.markersOn=markerSel.value==='on'; drawMarkers(); };
 function addMarkerFromClientCoords(clientX,clientY){ const r=canvas.getBoundingClientRect(); const w=wrap.getBoundingClientRect(); const x=((clientX-r.left)/r.width); const y=((clientY-r.top)/r.height); state.markers.push({x:Math.min(1,Math.max(0,x)),y:Math.min(1,Math.max(0,y))}); drawMarkers(); }
 function drawMarkers(){ wrap.querySelectorAll('.marker').forEach(m=>m.remove()); if(!state._imgBitmap||!state.markersOn) return; const r=canvas.getBoundingClientRect(); const w=wrap.getBoundingClientRect(); state.markers.forEach((m,i)=>{ const el=document.createElement('div'); el.className='marker'; if(state.selectedSwatch>=0 && i!==state.selectedSwatch) el.classList.add('dim'); el.textContent=(i+1); el.style.left=((m.x*r.width)+(r.left-w.left))+'px'; el.style.top=((m.y*r.height)+(r.top-w.top))+'px'; wrap.appendChild(el); }); }
 
-// Auto-extract
+// ---------- Auto-extract ----------
 btnExtract.onclick=()=>{ 
   if(state.tier==='basic'){ flash('Pro only'); return; } 
   if(canvas.width===0){ flash('Load an image first'); return; } 
@@ -113,7 +115,7 @@ btnExtract.onclick=()=>{
   renderPalette(); computeAllRecipes(); drawMarkers(); 
 };
 
-// Eyedropper
+// ---------- Eyedropper ----------
 btnEyedropper.onclick=()=>{ state.eyedropper=!state.eyedropper; btnEyedropper.classList.toggle('primary',state.eyedropper); wrap.setAttribute('data-sampling',state.eyedropper?'on':'off'); flash(state.eyedropper?'Eyedropper ON':'Eyedropper OFF'); };
 function updateLoupe(clientX,clientY){ if(canvas.width===0) return; const r=canvas.getBoundingClientRect(); const w=wrap.getBoundingClientRect(); const x=(clientX-r.left)*(canvas.width/r.width); const y=(clientY-r.top)*(canvas.height/r.height); lctx.imageSmoothingEnabled=false; lctx.clearRect(0,0,90,90); lctx.drawImage(canvas,Math.max(0,x-15),Math.max(0,y-15),30,30,0,0,90,90); const lx=clientX-w.left-45; const ly=clientY-w.top-105; loupe.style.left=lx+'px'; loupe.style.top=ly+'px'; loupe.style.display='block'; }
 function pickAt(clientX,clientY){ const rect=canvas.getBoundingClientRect(); const x=Math.floor((clientX-rect.left)*(canvas.width/rect.width)); const y=Math.floor((clientY-rect.top)*(canvas.height/rect.height)); const k=parseInt(sampleSizeSel.value,10); const r=Math.max(0,Math.floor(k/2)); const sx=Math.max(0,x-r), sy=Math.max(0,y-r); const sw=Math.min(canvas.width-sx,k), sh=Math.min(canvas.height-sy,k); const data=ctx.getImageData(sx,sy,sw,sh).data; let R=0,G=0,B=0,W=0; for(let i=0;i<data.length;i+=4){ const rr=data[i],gg=data[i+1],bb=data[i+2]; const mx=Math.max(rr,gg,bb),mn=Math.min(rr,gg,bb); const sat=(mx-mn)/255; const weight=0.6+0.4*sat; R+=rr*weight; G+=gg*weight; B+=bb*weight; W+=weight; } const hx=rgbToHex([Math.round(R/W),Math.round(G/W),Math.round(B/W)]); pushHistory(); state.swatches.push(hx); addMarkerFromClientCoords(clientX,clientY); renderPalette(); computeAllRecipes(); loupe.style.display='none'; }
@@ -124,7 +126,7 @@ canvas.addEventListener('touchstart', e=>{ if(!state.eyedropper) return; e.preve
 canvas.addEventListener('touchmove',  e=>{ if(!state.eyedropper) return; e.preventDefault(); const t=e.touches[0]; updateLoupe(t.clientX,t.clientY); }, {passive:false});
 canvas.addEventListener('touchend',   e=>{ if(!state.eyedropper) return; e.preventDefault(); const t=e.changedTouches[0]; pickAt(t.clientX,t.clientY); }, {passive:false});
 
-// Palette render (with delete)
+// ---------- Palette render (with delete) ----------
 function renderPalette(){ 
   paletteStrip.innerHTML=''; 
   const style = (state.tier==='basic') ? 'pngSquare' : state.style; 
@@ -144,7 +146,7 @@ function renderPalette(){
   }); 
 }
 
-// Color math
+// ---------- Color helpers ----------
 function hexToRgb(hx){ hx=hx.replace('#',''); return [parseInt(hx.slice(0,2),16),parseInt(hx.slice(2,4),16),parseInt(hx.slice(4,6),16)]; }
 function rgbToHex([r,g,b]){ return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join('').toUpperCase(); }
 function srgbToLinear(c){ c/=255; return c<=0.04045? c/12.92 : Math.pow((c+0.055)/1.055,2.4); }
@@ -153,6 +155,7 @@ function xyzToLab([X,Y,Z]){ const Xr=0.95047,Yr=1.00000,Zr=1.08883; const f=t=> 
 function rgbToLab(rgb){ return xyzToLab(rgbToXyz(rgb)); }
 function distLab(a,b){ return Math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2 + (a[2]-b[2])**2); }
 
+// ---------- Auto-extract (k-means in Lab) ----------
 function extractPaletteWithCoords(cv,k,preferPure){ 
   const w=cv.width,h=cv.height; 
   const data=ctx.getImageData(0,0,w,h).data; 
@@ -196,6 +199,7 @@ function extractPaletteWithCoords(cv,k,preferPure){
   return {colors:centers.map(c=>[Math.round(c[0]),Math.round(c[1]),Math.round(c[2])]), coords}; 
 }
 
+// ---------- Mix solving ----------
 function solveWeights(targetRgb, subset){ 
   const A=subset.map(ink=>hexToRgb(ink.hex)).map(v=>v.map(s=>{s/=255; return s<=0.04045? s/12.92: Math.pow((s+0.055)/1.055,2.4)})); 
   const c=targetRgb.map(s=>{s/=255; return s<=0.04045? s/12.92: Math.pow((s+0.055)/1.055,2.4)}); 
@@ -261,7 +265,7 @@ function renderRecipes(){
 }
 function flash(m){ statusChip.textContent=m; setTimeout(()=> statusChip.textContent='Ready',1100); }
 
-// Save/Load & Export
+// ---------- Save/Load & Export ----------
 btnSave.onclick=()=>{ 
   if(state.tier==='basic'){ flash('Pro only'); return; } 
   const payload={brand:state.brand,cap:state.cap,unit:unitSel.value,swatches:state.swatches,markers:state.markers,studio:studioInput.value,client:clientInput.value,date:dateInput.value,placement:placementInput.value}; 
@@ -324,7 +328,7 @@ function buildPages(includeMarkers){
 btnExportPNG.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; } const pages=buildPages(true); pages.forEach((cv,i)=>{ const a=document.createElement('a'); a.href=cv.toDataURL('image/png'); a.download=`TattooLab_mix_p${i+1}.png`; a.click(); }); };
 btnExportPDF.onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; } const pages=buildPages(true); const w=window.open('','_blank'); w.document.write('<html><head><title>Tattoo Lab — Print</title><style>img{max-width:100%;page-break-after:always;margin:0;display:block}</style></head><body></body></html>'); pages.forEach(cv=>{ const img=w.document.createElement('img'); img.src=cv.toDataURL('image/png'); w.document.body.appendChild(img); }); w.document.close(); w.focus(); setTimeout(()=> w.print(),300); };
 
-// Style toggles
+// ---------- Style toggles ----------
 $('btnStyleSquare').onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; } state.style='pngSquare'; renderPalette(); };
 $('btnStyleSplatPng').onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; } state.style='pngSplat'; renderPalette(); };
 $('btnStyleSplatSvg').onclick=()=>{ if(state.tier==='basic'){ flash('Pro only'); return; } state.style='svgSplat'; renderPalette(); };
@@ -333,7 +337,7 @@ $('splatSave').onclick=()=>{ const val=$('splatInput').value.trim(); if(val){ lo
 $('splatClear').onclick=()=>{ localStorage.removeItem('tl-splat'); renderPalette(); flash('Splat path cleared'); };
 $('splatClose').onclick=()=>{ $('splatModal').style.display='none'; };
 
-// Selects & init
+// ---------- Selects & init ----------
 brandSel.onchange=()=>{ state.brand=brandSel.value; computeAllRecipes(); };
 capSel.onchange=()=>{ state.cap=capSel.value; computeAllRecipes(); };
 unitSel.onchange=()=>{ if(state.tier==='basic'){ unitSel.value='drops'; return; } renderRecipes(); };
@@ -341,7 +345,7 @@ unitSel.onchange=()=>{ if(state.tier==='basic'){ unitSel.value='drops'; return; 
 let CUSTOM_SPLAT_PATH = localStorage.getItem('tl-splat') || null;
 renderPalette(); computeAllRecipes(); setTier('basic');
 
-// ===== License: Firebase Realtime Database (one-time use) =====
+// ---------- License: Firebase Realtime Database (one-time use) ----------
 (function initRealtimeLicense(){
   try{
     if(!window.TL_CONFIG?.proGate) return;
