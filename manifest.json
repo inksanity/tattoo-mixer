@@ -1,0 +1,22 @@
+{
+  "name": "Tattoo Lab",
+  "short_name": "Tattoo Lab",
+  "description": "Tattoo ink palette & mixing recipes \u2014 Basic + Pro. PWA.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0e13",
+  "theme_color": "#0b0e13",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}
