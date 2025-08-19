@@ -11,6 +11,21 @@ const BRANDS = {
     {name:"Radiant White",hex:"#FFFFFF"},{name:"Real Black",hex:"#111111"},{name:"Blood Red",hex:"#C21807"},
     {name:"Blue",hex:"#1E50A2"},{name:"Canary Yellow",hex:"#FFD12A"},{name:"Medium Green",hex:"#2FA84F"},
     {name:"Tiger Orange",hex:"#FF7A00"},{name:"Chocolate",hex:"#6B3E26"},{name:"Fuchsia",hex:"#C218C2"},{name:"Lavender",hex:"#B57EDC"}
+  ],
+  "Eternal":[
+    {name:"Lining Black",hex:"#111111"},{name:"White",hex:"#FFFFFF"},{name:"Bright Orange",hex:"#FF7F2A"},
+    {name:"True Blue",hex:"#0076CE"},{name:"Light Purple",hex:"#B27AD3"},{name:"Lime Green",hex:"#7FD321"},
+    {name:"Dark Brown",hex:"#4D2C1E"},{name:"Light Magenta",hex:"#FF6FB5"},{name:"Lipstick Red",hex:"#C21E3A"},{name:"Caramel",hex:"#A86D3D"}
+  ],
+  "Solid":[
+    {name:"El Picante",hex:"#CF4F2E"},{name:"Satan Red",hex:"#B0122E"},{name:"Traditional Orange",hex:"#FF6A1C"},
+    {name:"Oro",hex:"#E6B422"},{name:"Dirty Green",hex:"#6B8F3B"},{name:"Jade",hex:"#00A86B"},
+    {name:"Green 7",hex:"#008B45"},{name:"Blue 15",hex:"#1E50A2"},{name:"Old Brown",hex:"#5C3B2E"},{name:"Coffee",hex:"#4B3621"}
+  ],
+  "Raw":[
+    {name:"Raw White",hex:"#FFFFFF"},{name:"Pitch Black",hex:"#111111"},{name:"Bright Yellow",hex:"#FFD11A"},
+    {name:"Blue Sky",hex:"#2CA9E1"},{name:"Raw Green",hex:"#2E8B57"},{name:"Laker Purple",hex:"#7F3FBF"},
+    {name:"Light Red",hex:"#E24C4B"},{name:"Agent Orange",hex:"#FF6A00"},{name:"Bloodberry",hex:"#B03060"},{name:"Yellow Ochre",hex:"#C99700"}
   ]
 };
 let CUSTOM_SPLAT_PATH = localStorage.getItem('tl-splat') || "M52,8 C63,5 83,12 89,26 C98,36 98,56 90,68 C85,83 63,96 46,92 C33,96 18,88 13,73 C6,62 10,42 20,31 C25,18 38,12 52,8 Z";

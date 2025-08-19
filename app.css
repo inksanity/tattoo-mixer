@@ -48,24 +48,3 @@ canvas{max-width:100%;max-height:100%;display:block}
 .chip{display:inline-flex;gap:6px;align-items:center;border-radius:999px;padding:6px 10px;background:var(--panel-2);border:1px solid var(--stroke-2);color:var(--text);box-shadow:var(--shadow)}
 .toolbar{position:sticky;bottom:0;z-index:4;margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--stroke);background:linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.08));backdrop-filter: blur(8px)}
 .dialog{background:var(--panel);border:1px solid var(--stroke);border-radius:16px;padding:16px;max-width:520px;box-shadow:var(--shadow)}
-
-
-/* Build chip */
-.chip.build{
-  margin-left:auto;
-  align-self:center;
-  background:#111; /* bold dark */
-  color:#fff;
-  font-weight:800;
-  padding:6px 10px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.15);
-  letter-spacing:.2px;
-  white-space:nowrap;
-}
-/* If header is light theme */
-:root.light .chip.build{
-  background:#d32f2f; /* Radiant red pop in light mode */
-  color:#fff;
-  border-color:rgba(0,0,0,.08);
-}

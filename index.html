@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
+<div id="errBanner" style="display:none;position:sticky;top:0;z-index:9999;background:#C62828;color:#fff;padding:8px 12px;font-weight:700;letter-spacing:.2px;">Error: (none)</div>
 <div class="app">
   <div class="appbar">
     <div class="brand"><img src="icons/icon-64.png" alt=""><span>Tattoo Lab</span> <span class="badge" id="tierBadge">Basic</span> <span class="badge">PWA</span></div>
@@ -21,7 +22,6 @@
       <button class="seg active" id="segBasic">Basic</button>
       <button class="seg" id="segPro">Pro</button>
     </div>
-    <div id="buildChip" class="chip build">Tattoo Lab • loading…</div>
     <div class="row">
       <button class="btn" id="btnEnterKey">Enter License Key</button>
       <button class="btn" id="themeToggle">Toggle Theme</button>
@@ -154,7 +154,7 @@
 </div>
 
 <script>
-if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('service-worker.js'); }); }
+/* Service worker disabled in Safe Mode to avoid stale caches */
 const root = document.documentElement;
 const savedTheme = localStorage.getItem('tl-theme'); if(savedTheme === 'light'){ root.classList.add('light'); }
 document.getElementById('themeToggle').onclick = ()=>{ root.classList.toggle('light'); localStorage.setItem('tl-theme', root.classList.contains('light') ? 'light' : 'dark'); };
@@ -167,21 +167,29 @@ document.getElementById('themeToggle').onclick = ()=>{ root.classList.toggle('li
 <script src="app.js"></script>
 
 <script>
-(async function(){
-  try{
-    const res = await fetch('service-worker.js?v=' + Date.now(), {cache: 'no-store'});
-    const txt = await res.text();
-    const m = txt.match(/CACHE_NAME='([^']+)'/);
-    const tag = m ? m[1].replace('tattoolab-','') : 'dev';
-    const chip = document.getElementById('buildChip');
-    if(chip){
-      // Radiant-only label while in test mode
-      chip.textContent = 'Tattoo Lab • ' + tag + ' • Radiant';
-    }
-  }catch(e){
-    const chip = document.getElementById('buildChip');
-    if(chip){ chip.textContent = 'Tattoo Lab • dev • Radiant'; }
-    console.warn('Build tag detect failed', e);
+// SafeMode Error Hook
+(function(){
+  var shown=false;
+  window.onerror=function(msg,src,lin,col,err){
+    var el=document.getElementById('errBanner');
+    if(!el) return;
+    el.style.display='block';
+    el.textContent='Error: '+msg+' @'+(src||'')+':'+(lin||'')+':'+(col||'');
+    if(err && err.stack && !shown){ console.error(err.stack); shown=true; }
+  };
+  // Force build chip text if dynamic fetch fails
+  var chip=document.getElementById('buildChip');
+  if(chip && chip.textContent.indexOf('v5')===-1){
+    chip.textContent='Tattoo Lab • v5d11 • Radiant';
+  }
+  // Ensure Radiant brand label visible if dropdown fails
+  var brandLabel=document.querySelector('[data-brand-label]');
+  if(!brandLabel){
+    var sx=document.createElement('div');
+    sx.setAttribute('data-brand-label','1');
+    sx.style.cssText='position:absolute;right:16px;top:46px;font-weight:800;color:#222;opacity:.6';
+    sx.textContent='Brand: Radiant';
+    document.body.appendChild(sx);
   }
 })();
 </script>
