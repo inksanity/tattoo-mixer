@@ -1,4 +1,4 @@
-const CACHE_NAME='tattoolab-v5d3a';
+const CACHE_NAME = 'tattoolab-v5d3b';
 const ASSETS=[
   './','./index.html','./app.css','./app.js','./manifest.json','./config.js',
   './assets/mask_square.png','./assets/mask_splat.png',
