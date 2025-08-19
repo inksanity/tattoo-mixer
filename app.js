@@ -27,6 +27,28 @@ const BRANDS = {
     {name:"Blue Sky",hex:"#2CA9E1"},{name:"Raw Green",hex:"#2E8B57"},{name:"Laker Purple",hex:"#7F3FBF"},
     {name:"Light Red",hex:"#E24C4B"},{name:"Agent Orange",hex:"#FF6A00"},{name:"Bloodberry",hex:"#B03060"},{name:"Yellow Ochre",hex:"#C99700"}
   ]
+
+  ,
+  "World Famous":[
+    {name:"WF White",hex:"#FFFFFF"},{name:"WF Lining Black",hex:"#111111"},{name:"WF Golden Yellow",hex:"#FFC300"},
+    {name:"WF Scarlet Red",hex:"#C62828"},{name:"WF Coral Orange",hex:"#FF6A1C"},{name:"WF Royal Blue",hex:"#1E50A2"},
+    {name:"WF Emerald",hex:"#009B77"},{name:"WF Purple Haze",hex:"#7F3FBF"},{name:"WF Chocolate",hex:"#5C3B2E"},{name:"WF Magenta",hex:"#D81B60"}
+  ],
+  "Electrum":[
+    {name:"Electrum White",hex:"#FFFFFF"},{name:"Electrum Black",hex:"#111111"},{name:"Electrum Canary",hex:"#FFD12A"},
+    {name:"Electrum Blood Red",hex:"#B0122E"},{name:"Electrum Orange",hex:"#FF7A00"},{name:"Electrum Blue",hex:"#2C6CC9"},
+    {name:"Electrum Green",hex:"#2FA84F"},{name:"Electrum Purple",hex:"#8E5CC2"},{name:"Electrum Brown",hex:"#6B3E26"},{name:"Electrum Pink",hex:"#FF6FB5"}
+  ],
+  "Dynamic":[
+    {name:"Dynamic White",hex:"#FFFFFF"},{name:"Dynamic Triple Black",hex:"#0F0F0F"},{name:"Dynamic Canary",hex:"#FFD11A"},
+    {name:"Dynamic Fire Red",hex:"#C21807"},{name:"Dynamic Orange",hex:"#FF6A00"},{name:"Dynamic Blue",hex:"#1E50A2"},
+    {name:"Dynamic Green",hex:"#00A86B"},{name:"Dynamic Purple",hex:"#7F3FBF"},{name:"Dynamic Brown",hex:"#4B3621"},{name:"Dynamic Magenta",hex:"#C218C2"}
+  ],
+  "Allegory":[
+    {name:"Allegory White",hex:"#F5F5F5"},{name:"Allegory Black",hex:"#131313"},{name:"Allegory Lemon",hex:"#FFD54F"},
+    {name:"Allegory Red",hex:"#C62828"},{name:"Allegory Orange",hex:"#FF7043"},{name:"Allegory Blue",hex:"#1976D2"},
+    {name:"Allegory Green",hex:"#2E7D32"},{name:"Allegory Violet",hex:"#7E57C2"},{name:"Allegory Brown",hex:"#6D4C41"},{name:"Allegory Pink",hex:"#EC407A"}
+  ]
 };
 let CUSTOM_SPLAT_PATH = localStorage.getItem('tl-splat') || "M52,8 C63,5 83,12 89,26 C98,36 98,56 90,68 C85,83 63,96 46,92 C33,96 18,88 13,73 C6,62 10,42 20,31 C25,18 38,12 52,8 Z";
 
@@ -104,20 +126,23 @@ function distLab(a,b){ return Math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2 + (a[2]-
 function extractPaletteWithCoords(cv,k,preferPure){ const w=cv.width,h=cv.height; const data=ctx.getImageData(0,0,w,h).data; const step=Math.max(1,Math.floor((w*h)/5000)); const pts=[],pos=[],wts=[]; for(let i=0;i<data.length;i+=4*step){ const idx=i/4; const x=idx%w, y=(idx-x)/w; const rr=data[i],gg=data[i+1],bb=data[i+2]; const mx=Math.max(rr,gg,bb),mn=Math.min(rr,gg,bb); let weight=1; if(preferPure){ const sat=(mx-mn)/255; const lum=(0.2126*rr+0.7152*gg+0.0722*bb)/255; weight=0.6+0.5*sat+0.1*Math.abs(lum-0.5);} pts.push([rr,gg,bb]); pos.push([x/w,y/h]); wts.push(weight);} const centers=[],labCenters=[]; for(let i=0;i<k;i++){ const p=pts[Math.floor(Math.random()*pts.length)]; centers.push(p); labCenters.push(rgbToLab(p)); } let changed=true,iter=0; const assign=new Array(pts.length).fill(0); while(changed && iter<12){ iter++; changed=false; const buckets=Array.from({length:k},()=>({sum:[0,0,0],w:0})); for(let i=0;i<pts.length;i++){ const lp=rgbToLab(pts[i]); let bi=0,bd=1e9; for(let j=0;j<k;j++){ const d=distLab(lp,labCenters[j]); if(d<bd){bd=d; bi=j} } assign[i]=bi; const b=buckets[bi]; const wt=wts[i]; b.sum[0]+=pts[i][0]*wt; b.sum[1]+=pts[i][1]*wt; b.sum[2]+=pts[i][2]*wt; b.w+=wt; } for(let j=0;j<k;j++){ if(buckets[j].w>0){ const nc=[buckets[j].sum[0]/buckets[j].w,buckets[j].sum[1]/buckets[j].w,buckets[j].sum[2]/buckets[j].w]; const nl=rgbToLab(nc); if(distLab(nl,labCenters[j])>1){ changed=true; labCenters[j]=nl; centers[j]=nc; } } } } const coords=[]; for(let j=0;j<k;j++){ let bestI=-1,bestD=1e9; const cl=labCenters[j]; for(let i=0;i<pts.length;i++){ if(assign[i]!==j) continue; const d=distLab(rgbToLab(pts[i]),cl); if(d<bestD){ bestD=d; bestI=i; } } coords.push(bestI>=0?pos[bestI]:[0.5,0.5]); } centers.sort((a,b)=> rgbToLab(b)[0]-rgbToLab(a)[0]); return {colors:centers.map(c=>[Math.round(c[0]),Math.round(c[1]),Math.round(c[2])]), coords}; }
 function solveWeights(targetRgb, subset){ const A=subset.map(ink=>hexToRgb(ink.hex)).map(v=>v.map(s=>{s/=255; return s<=0.04045? s/12.92: Math.pow((s+0.055)/1.055,2.4)})); const c=targetRgb.map(s=>{s/=255; return s<=0.04045? s/12.92: Math.pow((s+0.055)/1.055,2.4)}); const n=A.length; let w=Array(n).fill(1/n); function mulAw(w){ const y=[0,0,0]; for(let j=0;j<n;j++){ y[0]+=A[j][0]*w[j]; y[1]+=A[j][1]*w[j]; y[2]+=A[j][2]*w[j]; } return y; } function grad(w){ const y=mulAw(w); const r=[y[0]-c[0],y[1]-c[1],y[2]-c[2]]; const g=Array(n).fill(0); for(let j=0;j<n;j++){ g[j]=2*(A[j][0]*r[0]+A[j][1]*r[1]+A[j][2]*r[2]) } return g; } function projectSimplex(v){ const u=[...v].sort((a,b)=>b-a); let css=0,rho=0; for(let i=0;i<v.length;i++){ css+=u[i]; if(u[i]+(1-css)/(i+1)>0) rho=i } const theta=(1-u.slice(0,rho+1).reduce((s,x)=>s+x,0))/(rho+1); return v.map(x=> Math.max(0,x+theta)); } let t=0.1; for(let it=0; it<400; it++){ const g=grad(w); w=w.map((wi,i)=> wi - t*g[i]); w=projectSimplex(w); t*=0.98; } return w; }
 
+
 function pickSubset(targetHex,brandInks){
   const targetLab=rgbToLab(hexToRgb(targetHex));
   const L=targetLab[0]; const C=Math.hypot(targetLab[1], targetLab[2]);
   const isWhite=i=>/white/i.test(i.name); const isBlack=i=>/black/i.test(i.name);
   const whites=brandInks.filter(isWhite); const blacks=brandInks.filter(isBlack);
   const colors=brandInks.filter(i=>!isWhite(i)&&!isBlack(i));
-  const ranked=colors.map(ink=>({ink,d:distLab(targetLab,rgbToLab(hexToRgb(ink.hex)))})).sort((a,b)=>a.d-b.d).map(x=>x.ink);
+  const ranked=colors
+    .map(ink=>({ink,d:distLab(targetLab,rgbToLab(hexToRgb(ink.hex)))}))
+    .sort((a,b)=>a.d-b.d)
+    .map(x=>x.ink);
   let chosen=ranked.slice(0,3);
   if(L>70 && whites[0] && !chosen.includes(whites[0])) chosen.push(whites[0]);
   const nearBlack=(L<20)&&(C<8);
   if(nearBlack && blacks[0] && !chosen.includes(blacks[0])) chosen.push(blacks[0]);
   return chosen.slice(0,4);
 }
-)); arr.sort((a,b)=>a.d-b.d); const chosen=arr.slice(0,3).map(x=>x.ink); const L=targetLab[0]; const hasWhite=brandInks.find(i=>/white/i.test(i.name)), hasBlack=brandInks.find(i=>/black/i.test(i.name)); if(L>70 && hasWhite && !chosen.includes(hasWhite)) chosen.push(hasWhite); if(L<30 && hasBlack && !chosen.includes(hasBlack)) chosen.push(hasBlack); return chosen.slice(0,4); }
 
 function refineWeightsForPigments(weights, subset, targetHex){
   try{
