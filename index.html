@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Tattoo Lab — PWA (v5d3)</title>
+<title>Tattoo Lab — PWA (v5d3a)</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0b0e13">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -153,12 +153,22 @@
 </div>
 
 <script>
-if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('service-worker.js'); }); }
-const root = document.documentElement;
-const savedTheme = localStorage.getItem('tl-theme'); if(savedTheme === 'light'){ root.classList.add('light'); }
-document.getElementById('themeToggle').onclick = ()=>{ root.classList.toggle('light'); localStorage.setItem('tl-theme', root.classList.contains('light') ? 'light' : 'dark'); };
+  // Show JS errors on the page (handy on iPad)
+  window.addEventListener('error', e => {
+    const pre = document.createElement('pre');
+    pre.style.cssText = 'position:fixed;bottom:0;left:0;right:0;max-height:40vh;overflow:auto;background:#300;color:#fff;padding:8px;margin:0;z-index:9999;font:12px/1.4 monospace';
+    pre.textContent = 'Error: ' + (e.error && e.error.stack ? e.error.stack : e.message);
+    document.body.appendChild(pre);
+  });
+
+  // SW
+  if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('service-worker.js'); }); }
+  const root = document.documentElement;
+  const savedTheme = localStorage.getItem('tl-theme'); if(savedTheme === 'light'){ root.classList.add('light'); }
+  document.getElementById('themeToggle').onclick = ()=>{ root.classList.toggle('light'); localStorage.setItem('tl-theme', root.classList.contains('light') ? 'light' : 'dark'); };
 </script>
-<!-- Config + Firebase SDKs (Compat) -->
+
+<!-- Firebase config + SDKs (Compat) -->
 <script src="./config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
