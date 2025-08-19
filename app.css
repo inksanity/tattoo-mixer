@@ -20,7 +20,7 @@ main{display:grid;grid-template-columns:minmax(280px,58%) minmax(320px,1fr);gap:
 select,input,textarea{ background:var(--panel-2); border:1px solid var(--stroke-2); color:var(--text); border-radius:12px; padding:10px 12px; min-height:42px; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); -webkit-appearance:none; appearance:none; }
 :root.light select,:root.light input,:root.light textarea{box-shadow:none}
 textarea{min-height:80px; resize:vertical}
-select{ background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;%235b6b82&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;><polyline points=&quot;6 9 12 15 18 9&quot;/></svg>'); background-repeat:no-repeat; background-position: right 10px center; padding-right:34px }
+select{ background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%235b6b82" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'); background-repeat:no-repeat; background-position: right 10px center; padding-right:34px }
 .btn{background:linear-gradient(180deg,#182135,#0f1626);border:1px solid var(--stroke-2);color:#fff;padding:10px 12px;border-radius:14px;box-shadow:var(--shadow);cursor:pointer}
 :root.light .btn{background:linear-gradient(180deg,#fff,#f2f4f9); color:#0b1220}
 .btn.primary{background:linear-gradient(180deg,#ffb86b,#ff6a2a);color:#0b1220;border-color:#d45a1e;text-shadow:0 1px 0 rgba(255,255,255,.4)}
